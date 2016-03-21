@@ -36,20 +36,12 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
+
+
     @Override
     public void createRoom(Room room) {
-        if (room == null) {
-            throw new IllegalArgumentException("room is null");
-        }
-        if (room.getNumber() < 0) {
-            throw new IllegalArgumentException("number of room is negative");
-        }
-        if (room.getNumberOfBeds() < 0) {
-            throw new IllegalArgumentException("number of beds is negative");
-        }
-        if (room.getPrice().doubleValue() < 0) {
-            throw new IllegalArgumentException("price is negative");
-        }
+        validate(room);
+
         if (room.getId() != null) {
             throw new IllegalArgumentException("room id is already set");
         }
@@ -97,5 +89,20 @@ public class RoomManagerImpl implements RoomManager {
 
     public List<Room> getAllRooms() {
         return null;
+    }
+
+    private void validate(Room room) {
+        if (room == null) {
+            throw new IllegalArgumentException("room is null");
+        }
+        if (room.getNumber() < 0) {
+            throw new IllegalArgumentException("number of room is negative");
+        }
+        if (room.getNumberOfBeds() < 0) {
+            throw new IllegalArgumentException("number of beds is negative");
+        }
+        if (room.getPrice().doubleValue() < 0) {
+            throw new IllegalArgumentException("price is negative");
+        }
     }
 }
