@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168;
 
 
+import java.util.Objects;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -9,39 +10,10 @@ public class Guest {
     private Long id;
     private String fullName;
 
-    public Guest() {
-
-    }
-
-    public Guest(Guest guest) {
-        this.id = guest.id;
-        this.fullName = guest.fullName;
-    }
-
-    public Guest(String name) {
-        fullName = name;
-    }
+    public Guest() {}
 
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Guest guest = (Guest) o;
-
-        return id.equals(guest.id) && (fullName != null ? fullName.equals(guest.fullName) : guest.fullName == null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
-        return result;
     }
 
     public void setId(Long id) {
@@ -54,5 +26,19 @@ public class Guest {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Guest other = (Guest) o;
+        return Objects.equals(this.id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
