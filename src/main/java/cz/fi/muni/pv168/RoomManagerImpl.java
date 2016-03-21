@@ -36,8 +36,7 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
-    @Override
-    public void createRoom(Room room) {
+    private void validate(Room room) {
         if (room == null) {
             throw new IllegalArgumentException("room is null");
         }
@@ -50,6 +49,11 @@ public class RoomManagerImpl implements RoomManager {
         if (room.getPrice().doubleValue() < 0) {
             throw new IllegalArgumentException("price is negative");
         }
+    }
+
+    @Override
+    public void createRoom(Room room) {
+        validate(room);
         if (room.getId() != null) {
             throw new IllegalArgumentException("room id is already set");
         }
@@ -78,8 +82,33 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
-    public void updateRoom(Room room) {
+    public void updateRoom(Room room) throws RuntimeException{
+        validate(room);
+        if (room.getId() == null) {
+            throw new IllegalArgumentException("room id is null");
+        }
 
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement st = connection.prepareStatement(
+                     "UPDATE Room SET number = ?, numberOfBeds = ?, balcony = ?, price = ? WHERE id = ?")) {
+
+            st.setInt(1, room.getNumber());
+            st.setInt(2, room.getNumberOfBeds());
+            st.setBoolean(3, room.hasBalcony());
+            st.setBigDecimal(4, room.getPrice());
+            st.setLong(5, room.getId());
+
+            int count = st.executeUpdate();
+
+            if (count == 0) {
+                throw new RuntimeException("Room " + room + " was not found in database!");
+            } else if (count != 1) {
+                throw new RuntimeException("Invalid updated rows count detected (one row should be updated): " + count);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(
+                    "Error when updating room " + room, ex);
+        }
     }
 
     public void deleteRoom(Room room) {
