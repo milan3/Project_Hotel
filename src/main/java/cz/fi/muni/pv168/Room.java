@@ -13,7 +13,6 @@ public class Room {
     private BigDecimal price;
 
     public Room() {
-
     }
 
     public Room(Room room) {
