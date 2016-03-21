@@ -9,6 +9,15 @@ public class Guest {
     private Long id;
     private String fullName;
 
+    public Guest() {
+
+    }
+
+    public Guest(Guest guest) {
+        this.id = guest.id;
+        this.fullName = guest.fullName;
+    }
+
     public Guest(String name) {
         fullName = name;
     }
@@ -24,8 +33,7 @@ public class Guest {
 
         Guest guest = (Guest) o;
 
-        if (!id.equals(guest.id)) return false;
-        return fullName != null ? fullName.equals(guest.fullName) : guest.fullName == null;
+        return id.equals(guest.id) && (fullName != null ? fullName.equals(guest.fullName) : guest.fullName == null);
 
     }
 

@@ -7,15 +7,26 @@ import java.math.BigDecimal;
  */
 public class Room {
     private Long id;
+    private int number;
     private int numberOfBeds;
-    private int floor;
     private boolean balcony;
     private BigDecimal price;
-    private int number;
 
-    public Room(int numberOfBeds, int floor, boolean balcony, BigDecimal price) {
+    public Room() {
+
+    }
+
+    public Room(Room room) {
+        this.id = room.id;
+        this.number = room.number;
+        this.numberOfBeds = room.numberOfBeds;
+        this.balcony = room.balcony;
+        this.price = room.price;
+    }
+
+    public Room(int number, int numberOfBeds, boolean balcony, BigDecimal price) {
+        this.number = number;
         this.numberOfBeds = numberOfBeds;
-        this.floor = floor;
         this.balcony = balcony;
         this.price = price;
     }
@@ -28,6 +39,14 @@ public class Room {
         this.id = id;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     public int getNumberOfBeds() {
         return numberOfBeds;
     }
@@ -36,15 +55,7 @@ public class Room {
         this.numberOfBeds = numberOfBeds;
     }
 
-    public int getFloor() {
-        return floor;
-    }
-
-    public void setFloor(int floor) {
-        this.floor = floor;
-    }
-
-    public boolean isBalcony() {
+    public boolean hasBalcony() {
         return balcony;
     }
 

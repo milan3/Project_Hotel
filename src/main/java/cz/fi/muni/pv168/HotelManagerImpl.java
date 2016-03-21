@@ -7,8 +7,13 @@ import java.util.List;
  */
 public class HotelManagerImpl implements HotelManager {
 
-    private GuestManager guestManager;
-    private RoomManager roomManager;
+    private final GuestManager guestManager;
+    private final RoomManager roomManager;
+
+    public HotelManagerImpl(GuestManager guestManager, RoomManager roomManager) {
+        this.guestManager = guestManager;
+        this.roomManager = roomManager;
+    }
 
     public List<Guest> findGuests(Room room) {
         return null;
@@ -29,4 +34,6 @@ public class HotelManagerImpl implements HotelManager {
     public List<Room> getAvailableRooms() {
         return null;
     }
+
+    public boolean isAvailable(Room room) { return false; }
 }

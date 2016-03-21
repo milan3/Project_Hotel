@@ -14,11 +14,11 @@ import static org.junit.Assert.*;
  */
 public class RoomManagerImplTest {
 
-    private RoomManagerImpl manager;
+    private RoomManager manager;
 
     @Before
     public void setUp() {
-        manager = new RoomManagerImpl();
+        manager = new RoomManagerImpl(null);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class RoomManagerImplTest {
 
         manager.createRoom(room1);
         manager.createRoom(room2);
-        List<Room> actual = new ArrayList<Room>();
+        List<Room> actual;
         List<Room> expected = Arrays.asList(room1, room2);
         actual =  manager.getAllRooms();
 
@@ -115,10 +115,29 @@ public class RoomManagerImplTest {
         assertEquals("saved and retrieved graves differ", expected, actual);
     }
 
+    @Test
+    public void testUpdateRoom() throws Exception {
+        Room room = newRoom(100, 2, false, BigDecimal.valueOf(111));
 
-    private static Comparator<Room> idComparator = new Comparator<Room>() {
-        public int compare(Room o1, Room o2) {
-            return o1.getId().compareTo(o2.getId());
-        }
-    };
+        manager.createRoom(room);
+        room.setBalcony(true);
+        room.setId(133L);
+        manager.updateRoom(room);
+        room = manager.getRoom(133L);
+
+        assertThat("Room should have balcony", room.hasBalcony(), is(equalTo(true)));
+    }
+
+    public static Room newRoom(int number, int numberOfBeds, boolean balcony, BigDecimal price)
+    {
+        Room room = new Room();
+        room.setNumber(number);
+        room.setNumberOfBeds(numberOfBeds);
+        room.setBalcony(balcony);
+        room.setPrice(price);
+
+        return room;
+    }
+
+    private static Comparator<Room> idComparator = (o1, o2) -> o1.getId().compareTo(o2.getId());
 }

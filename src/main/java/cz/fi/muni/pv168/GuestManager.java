@@ -6,9 +6,9 @@ import java.util.List;
  * Created by Milan on 15.03.2016.
  */
 public interface GuestManager {
-    public void createGuest(Guest guest);
-    public void updateGuest(Guest guest);
-    public void deleteGuest(Guest guest);
-    public Guest getGuest(Long id);
-    public List<Guest> getAllGuests();
+    void createGuest(Guest guest);
+    void updateGuest(Guest guest);
+    void deleteGuest(Guest guest);
+    Guest getGuest(Long id);
+    List<Guest> getAllGuests();
 }

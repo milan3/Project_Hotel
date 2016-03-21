@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 
 public class GuestManagerImplTest {
-    private GuestManagerImpl manager;
+    private GuestManager manager;
 
     @Before
     public void setUp() {
@@ -71,7 +71,7 @@ public class GuestManagerImplTest {
         manager.createGuest(guest2);
 
         List<Guest> expected = Arrays.asList(guest1, guest2);
-        List<Guest> actual = new ArrayList<Guest>(manager.getAllGuests());
+        List<Guest> actual = new ArrayList<>(manager.getAllGuests());
 
         Collections.sort(actual, idComparator);
         Collections.sort(expected, idComparator);
@@ -116,9 +116,5 @@ public class GuestManagerImplTest {
         }
     }
 
-    private static Comparator<Guest> idComparator = new Comparator<Guest>() {
-        public int compare(Guest o1, Guest o2) {
-            return o1.getId().compareTo(o2.getId());
-        }
-    };
+    private static Comparator<Guest> idComparator = (o1, o2) -> o1.getId().compareTo(o2.getId());
 }
