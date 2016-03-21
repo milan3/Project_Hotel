@@ -12,6 +12,10 @@ public class Guest {
 
     public Guest() {}
 
+    public Guest(String fullName) {
+        this.fullName = fullName;
+    }
+
     public Long getId() {
         return id;
     }
