@@ -98,7 +98,7 @@ public class RoomManagerImpl implements RoomManager {
             }
         } catch (SQLException ex) {
             throw new ServiceFailureException(
-                    "Error when updating grave " + room, ex);
+                    "Error when updating room " + room, ex);
         }
 
     }
