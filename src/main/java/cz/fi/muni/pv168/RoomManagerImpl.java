@@ -74,9 +74,33 @@ public class RoomManagerImpl implements RoomManager {
 
     }
 
-    public void deleteRoom(Room room) {
-        if (room == null)
-            throw  new IllegalArgumentException();
+    public void deleteRoom(Room room) throws RuntimeException {
+        if (room == null) {
+            throw new IllegalArgumentException("room is null");
+        }
+
+        if (room.getId() == null) {
+            throw new IllegalArgumentException("room id is null");
+        }
+
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement st = connection.prepareStatement(
+                        "DELETE FROM room WHERE id = ?")) {
+
+            st.setLong(1, room.getId());
+
+            int count = st.executeUpdate();
+            if (count == 0) {
+                throw new RuntimeException("Room " + room + " was not found in database!");
+            } else if (count != 1) {
+                throw new RuntimeException("Invalid deleted rows count detected (one row should be updated): " + count);
+            }
+        } catch (SQLException ex) {
+            throw new ServiceFailureException(
+                    "Error when updating grave " + room, ex);
+        }
+
     }
 
     public Room getRoom(Long id) {
