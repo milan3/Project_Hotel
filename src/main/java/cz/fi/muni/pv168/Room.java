@@ -71,4 +71,8 @@ public class Room {
         this.price = price;
     }
 
+    @Override
+    public String toString() {
+        return "Room(" + number + ")";
+    }
 }
