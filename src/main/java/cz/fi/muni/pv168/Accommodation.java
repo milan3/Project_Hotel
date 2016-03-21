@@ -12,14 +12,6 @@ public class Accommodation {
     private Room room;
     private Guest guest;
 
-    public Accommodation(Accommodation accomodation) {
-        this.id = accomodation.id;
-        this.arrival = accomodation.arrival;
-        this.departure = accomodation.departure;
-        this.room = accomodation.room;
-        this.guest = accomodation.guest;
-    }
-
     public Accommodation(LocalDate arrival, LocalDate departure, Room room, Guest guest) {
         this.arrival = arrival;
         this.departure = departure;

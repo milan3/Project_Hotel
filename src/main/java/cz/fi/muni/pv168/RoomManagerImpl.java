@@ -36,24 +36,12 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
-    private void validate(Room room) {
-        if (room == null) {
-            throw new IllegalArgumentException("room is null");
-        }
-        if (room.getNumber() < 0) {
-            throw new IllegalArgumentException("number of room is negative");
-        }
-        if (room.getNumberOfBeds() < 0) {
-            throw new IllegalArgumentException("number of beds is negative");
-        }
-        if (room.getPrice().doubleValue() < 0) {
-            throw new IllegalArgumentException("price is negative");
-        }
-    }
+
 
     @Override
     public void createRoom(Room room) {
         validate(room);
+
         if (room.getId() != null) {
             throw new IllegalArgumentException("room id is already set");
         }
@@ -82,38 +70,37 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
-    public void updateRoom(Room room) throws RuntimeException{
-        validate(room);
+    public void updateRoom(Room room) {
+
+    }
+
+    public void deleteRoom(Room room) throws RuntimeException {
+        if (room == null) {
+            throw new IllegalArgumentException("room is null");
+        }
+
         if (room.getId() == null) {
             throw new IllegalArgumentException("room id is null");
         }
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement st = connection.prepareStatement(
-                     "UPDATE Room SET number = ?, numberOfBeds = ?, balcony = ?, price = ? WHERE id = ?")) {
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement st = connection.prepareStatement(
+                        "DELETE FROM room WHERE id = ?")) {
 
-            st.setInt(1, room.getNumber());
-            st.setInt(2, room.getNumberOfBeds());
-            st.setBoolean(3, room.hasBalcony());
-            st.setBigDecimal(4, room.getPrice());
-            st.setLong(5, room.getId());
+            st.setLong(1, room.getId());
 
             int count = st.executeUpdate();
-
             if (count == 0) {
                 throw new RuntimeException("Room " + room + " was not found in database!");
             } else if (count != 1) {
-                throw new RuntimeException("Invalid updated rows count detected (one row should be updated): " + count);
+                throw new RuntimeException("Invalid deleted rows count detected (one row should be updated): " + count);
             }
         } catch (SQLException ex) {
-            throw new RuntimeException(
-                    "Error when updating room " + room, ex);
+            throw new ServiceFailureException(
+                    "Error when updating grave " + room, ex);
         }
-    }
 
-    public void deleteRoom(Room room) {
-        if (room == null)
-            throw  new IllegalArgumentException();
     }
 
     public Room getRoom(Long id) {
@@ -126,5 +113,20 @@ public class RoomManagerImpl implements RoomManager {
 
     public List<Room> getAllRooms() {
         return null;
+    }
+
+    private void validate(Room room) {
+        if (room == null) {
+            throw new IllegalArgumentException("room is null");
+        }
+        if (room.getNumber() < 0) {
+            throw new IllegalArgumentException("number of room is negative");
+        }
+        if (room.getNumberOfBeds() < 0) {
+            throw new IllegalArgumentException("number of beds is negative");
+        }
+        if (room.getPrice().doubleValue() < 0) {
+            throw new IllegalArgumentException("price is negative");
+        }
     }
 }
