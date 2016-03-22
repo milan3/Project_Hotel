@@ -146,10 +146,6 @@ public class RoomManagerImpl implements RoomManager {
         return room;
     }
 
-    public List<Room> getAvailableRooms() {
-        return null;
-    }
-
     public List<Room> getAllRooms() {
         try (
                 Connection connection = dataSource.getConnection();
