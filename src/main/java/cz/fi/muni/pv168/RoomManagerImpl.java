@@ -16,6 +16,42 @@ public class RoomManagerImpl implements RoomManager {
         this.dataSource = dataSource;
     }
 
+    @Override
+    public void createRoom(Room room) {
+        validate(room);
+
+        if (room.getId() != null) {
+            throw new IllegalArgumentException("room id is already set");
+        }
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement st = connection.prepareStatement(
+                     "INSERT INTO ROOM (number,numberOfBeds,balcony,price) VALUES (?,?,?,?)",
+                     Statement.RETURN_GENERATED_KEYS
+             )) {
+
+            st.setInt(1, room.getNumber());
+            st.setInt(2, room.getNumberOfBeds());
+            st.setBoolean(3, room.hasBalcony());
+            st.setBigDecimal(4, room.getPrice());
+
+            int addedRows = st.executeUpdate();
+
+            if (addedRows != 1)
+            {
+                throw new RuntimeException("Internal error: More rows inserted while trying to insert room " + room);
+            }
+
+            ResultSet keyRs = st.getGeneratedKeys();
+            if (keyRs == null) {
+                System.out.println("key je null");
+            }
+            room.setId(getKey(keyRs, room));
+        } catch(SQLException ex) {
+            throw new RuntimeException("Error while inserting room " + room, ex);
+        }
+    }
+
     private Long getKey(ResultSet keyRS, Room room) throws RuntimeException, SQLException {
         if (keyRS.next()) {
             if (keyRS.getMetaData().getColumnCount() != 1) {
@@ -34,40 +70,6 @@ public class RoomManagerImpl implements RoomManager {
             throw new RuntimeException("Internal Error: Generated key"
                     + "retrieving failed when trying to insert room " + room
                     + " - no key found");
-        }
-    }
-
-
-
-    @Override
-    public void createRoom(Room room) {
-        validate(room);
-
-        if (room.getId() != null) {
-            throw new IllegalArgumentException("room id is already set");
-        }
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement st = connection.prepareStatement(
-                     "INSERT INTO ROOM (number,numberOfBeds,balcony,price) VALUES (?,?,?,?)"
-             )) {
-
-            st.setInt(1, room.getNumber());
-            st.setInt(2, room.getNumberOfBeds());
-            st.setBoolean(3, room.hasBalcony());
-            st.setBigDecimal(4, room.getPrice());
-
-            int addedRows = st.executeUpdate();
-
-            if (addedRows != 1)
-            {
-                throw new RuntimeException("Internal error: More rows inserted while trying to insert room " + room);
-            }
-
-            ResultSet keyRs = st.getGeneratedKeys();
-            room.setId(getKey(keyRs, room));
-        } catch(SQLException ex) {
-            throw new RuntimeException("Error while inserting room " + room, ex);
         }
     }
 
@@ -167,7 +169,7 @@ public class RoomManagerImpl implements RoomManager {
                     "Error when retrieving all rooms", ex);
         }
     }
-    
+
 
     private void validate(Room room) {
         if (room == null) {

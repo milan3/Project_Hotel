@@ -12,16 +12,7 @@ public class Room {
     private boolean balcony;
     private BigDecimal price;
 
-    public Room() {
-    }
-
-    public Room(Room room) {
-        this.id = room.id;
-        this.number = room.number;
-        this.numberOfBeds = room.numberOfBeds;
-        this.balcony = room.balcony;
-        this.price = room.price;
-    }
+    public Room() {}
 
     public Room(int number, int numberOfBeds, boolean balcony, BigDecimal price) {
         this.number = number;
@@ -73,5 +64,21 @@ public class Room {
     @Override
     public String toString() {
         return "Room(" + number + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Room room = (Room) o;
+
+        return id != null ? id.equals(room.id) : room.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

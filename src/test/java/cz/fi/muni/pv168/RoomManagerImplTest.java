@@ -1,9 +1,14 @@
 package cz.fi.muni.pv168;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -15,10 +20,34 @@ import static org.junit.Assert.*;
 public class RoomManagerImplTest {
 
     private RoomManager manager;
+    private DataSource dataSource;
 
     @Before
-    public void setUp() {
-        manager = new RoomManagerImpl(null);
+    public void setUp() throws SQLException {
+        dataSource = prepareDataSource();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.prepareStatement("CREATE TABLE ROOM ("
+                    + "id bigint primary key generated always as identity,"
+                    + "number int,"
+                    + "numberOfBeds int,"
+                    + "balcony boolean,"
+                    + "price decimal)").executeUpdate();
+        }
+        manager = new RoomManagerImpl(dataSource);
+    }
+
+    private static DataSource prepareDataSource() throws SQLException {
+        EmbeddedDataSource ds = new EmbeddedDataSource();
+        ds.setDatabaseName("memory:roommanager-test");
+        ds.setCreateDatabase("create");
+        return ds;
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.prepareStatement("DROP TABLE ROOM").executeUpdate();
+        }
     }
 
     @Test

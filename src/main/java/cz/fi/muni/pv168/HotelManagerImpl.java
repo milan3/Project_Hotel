@@ -15,22 +15,27 @@ public class HotelManagerImpl implements HotelManager {
         this.roomManager = roomManager;
     }
 
+    @Override
     public List<Guest> findGuests(Room room) {
         return null;
     }
 
+    @Override
     public List<Room> getRooms(int floor) {
         return null;
     }
 
+    @Override
     public Accommodation accommodateGuest(Room room, Guest guest) {
         return null;
     }
 
+    @Override
     public void cancelAccommodation(Accommodation accommodation) {
 
     }
 
+    @Override
     public List<Room> getAvailableRooms() {
         return null;
     }
