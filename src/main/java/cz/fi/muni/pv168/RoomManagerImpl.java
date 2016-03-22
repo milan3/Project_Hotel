@@ -88,6 +88,7 @@ public class RoomManagerImpl implements RoomManager {
             st.setInt(2, room.getNumberOfBeds());
             st.setBoolean(3, room.hasBalcony());
             st.setBigDecimal(4, room.getPrice());
+            st.setLong(5, room.getId());
 
             int count = st.executeUpdate();
 
