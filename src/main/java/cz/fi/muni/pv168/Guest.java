@@ -12,6 +12,11 @@ public class Guest {
 
     public Guest() {}
 
+    public Guest(Guest guest) {
+        this.id = guest.id;
+        this.fullName = guest.fullName;
+    }
+
     public Guest(String fullName) {
         this.fullName = fullName;
     }

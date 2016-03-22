@@ -14,6 +14,14 @@ public class Room {
 
     public Room() {}
 
+    public Room(Room room) {
+        this.id = room.id;
+        this.number = room.number;
+        this.numberOfBeds = room.numberOfBeds;
+        this.balcony = room.balcony;
+        this.price = room.price;
+    }
+
     public Room(int number, int numberOfBeds, boolean balcony, BigDecimal price) {
         this.number = number;
         this.numberOfBeds = numberOfBeds;

@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168;
 
 import javax.sql.DataSource;
+import javax.xml.ws.Service;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class RoomManagerImpl implements RoomManager {
 
             if (addedRows != 1)
             {
-                throw new RuntimeException("Internal error: More rows inserted while trying to insert room " + room);
+                throw new ServiceFailureException("Internal error: More rows inserted while trying to insert room " + room);
             }
 
             ResultSet keyRs = st.getGeneratedKeys();
@@ -48,7 +49,7 @@ public class RoomManagerImpl implements RoomManager {
             }
             room.setId(getKey(keyRs, room));
         } catch(SQLException ex) {
-            throw new RuntimeException("Error while inserting room " + room, ex);
+            throw new ServiceFailureException("Error while inserting room " + room, ex);
         }
     }
 
@@ -73,8 +74,32 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
-    public void updateRoom(Room room) {
+    public void updateRoom(Room room) throws ServiceFailureException {
+        validate(room);
+        if (room.getId() == null) {
+            throw new IllegalArgumentException("room id is null");
+        }
 
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement st = connection.prepareStatement(
+                        "UPDATE Room SET number = ?, numberOfBeds = ?, balcony = ?, price = ? WHERE id = ?")) {
+
+            st.setInt(1, room.getNumber());
+            st.setInt(2, room.getNumberOfBeds());
+            st.setBoolean(3, room.hasBalcony());
+            st.setBigDecimal(4, room.getPrice());
+
+            int count = st.executeUpdate();
+
+            if (count == 0) {
+                throw new EntityNotFoundException("Room " + room + " was not found in database!");
+            } else if (count != 1) {
+                throw new ServiceFailureException("Invalid updated rows count detected (one row should be updated): " + count);
+            }
+        } catch (SQLException ex) {
+            throw new ServiceFailureException(
+                    "Error when updating room " + room, ex);
+        }
     }
 
     public void deleteRoom(Room room) throws RuntimeException {

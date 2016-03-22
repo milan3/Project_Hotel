@@ -147,12 +147,14 @@ public class RoomManagerImplTest {
     @Test
     public void testUpdateRoom() throws Exception {
         Room room = newRoom(100, 2, false, BigDecimal.valueOf(111));
+        Long id;
 
         manager.createRoom(room);
         room.setBalcony(true);
-        room.setId(133L);
+        id = room.getId();
+
         manager.updateRoom(room);
-        room = manager.getRoom(133L);
+        room = manager.getRoom(id);
 
         assertThat("Room should have balcony", room.hasBalcony(), is(equalTo(true)));
     }
