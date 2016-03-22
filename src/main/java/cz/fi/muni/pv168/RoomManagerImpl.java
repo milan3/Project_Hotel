@@ -2,6 +2,7 @@ package cz.fi.muni.pv168;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -104,7 +105,43 @@ public class RoomManagerImpl implements RoomManager {
     }
 
     public Room getRoom(Long id) {
-        return null;
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement st = connection.prepareStatement(
+                        "SELECT id,number,numberOfBeds,balcony,price FROM room WHERE id = ?")) {
+
+            st.setLong(1, id);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                Room room = resultSetToRoom(rs);
+
+                if (rs.next()) {
+                    throw new ServiceFailureException(
+                            "Internal error: More entities with the same id found "
+                                    + "(source id: " + id + ", found " + room + " and " + resultSetToRoom(rs));
+                }
+
+                return room;
+            } else {
+                return null;
+            }
+
+        } catch (SQLException ex) {
+            throw new ServiceFailureException(
+                    "Error when retrieving room with id " + id, ex);
+        }
+
+    }
+
+    private Room resultSetToRoom(ResultSet rs) throws SQLException {
+        Room room = new Room();
+        room.setId(rs.getLong("id"));
+        room.setNumber(rs.getInt("number"));
+        room.setNumberOfBeds(rs.getInt("numberOfBeds"));
+        room.setBalcony(rs.getBoolean("balcony"));
+        room.setPrice(rs.getBigDecimal("price"));
+        return room;
     }
 
     public List<Room> getAvailableRooms() {
@@ -112,8 +149,25 @@ public class RoomManagerImpl implements RoomManager {
     }
 
     public List<Room> getAllRooms() {
-        return null;
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement st = connection.prepareStatement(
+                        "SELECT id,number,numberOfBeds,balcony,price FROM room")) {
+
+            ResultSet rs = st.executeQuery();
+
+            List<Room> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(resultSetToRoom(rs));
+            }
+            return result;
+
+        } catch (SQLException ex) {
+            throw new ServiceFailureException(
+                    "Error when retrieving all rooms", ex);
+        }
     }
+    
 
     private void validate(Room room) {
         if (room == null) {
