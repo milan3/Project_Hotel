@@ -7,6 +7,18 @@
     <groupId>cz.muni.fi.pv168</groupId>
     <artifactId>hotel-manager</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <!-- libraries, search for more at http://search.maven.org/ -->
     <dependencies>
@@ -18,6 +30,12 @@
             <scope>test</scope><!-- it is included only during tests -->
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.12.1.1</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.derby</groupId>
