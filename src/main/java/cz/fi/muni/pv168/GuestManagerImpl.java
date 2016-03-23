@@ -1,11 +1,15 @@
 package cz.fi.muni.pv168;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Milan on 15.03.2016.
  */
 public class GuestManagerImpl implements GuestManager {
+    private JdbcTemplate jdbc;
 
     @Override
     public void createGuest(Guest guest) {
@@ -31,6 +35,10 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public List<Guest> getAllGuests() {
-        return null;
+        List<Guest> guests = new ArrayList<>();
+
+
+
+        return guests;
     }
 }
