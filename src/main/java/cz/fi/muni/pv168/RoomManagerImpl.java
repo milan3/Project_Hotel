@@ -28,8 +28,7 @@ public class RoomManagerImpl implements RoomManager {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement st = connection.prepareStatement(
                      "INSERT INTO ROOM (number,numberOfBeds,balcony,price) VALUES (?,?,?,?)",
-                     Statement.RETURN_GENERATED_KEYS
-             )) {
+                     Statement.RETURN_GENERATED_KEYS)) {
 
             st.setInt(1, room.getNumber());
             st.setInt(2, room.getNumberOfBeds());
@@ -56,19 +55,19 @@ public class RoomManagerImpl implements RoomManager {
     private Long getKey(ResultSet keyRS, Room room) throws RuntimeException, SQLException {
         if (keyRS.next()) {
             if (keyRS.getMetaData().getColumnCount() != 1) {
-                throw new RuntimeException("Internal Error: Generated key"
+                throw new ServiceFailureException("Internal Error: Generated key"
                         + "retrieving failed when trying to insert room " + room
                         + " - wrong key fields count: " + keyRS.getMetaData().getColumnCount());
             }
             Long result = keyRS.getLong(1);
             if (keyRS.next()) {
-                throw new RuntimeException("Internal Error: Generated key"
+                throw new ServiceFailureException("Internal Error: Generated key"
                         + "retrieving failed when trying to insert room " + room
                         + " - more keys found");
             }
             return result;
         } else {
-            throw new RuntimeException("Internal Error: Generated key"
+            throw new ServiceFailureException("Internal Error: Generated key"
                     + "retrieving failed when trying to insert room " + room
                     + " - no key found");
         }
@@ -121,9 +120,9 @@ public class RoomManagerImpl implements RoomManager {
 
             int count = st.executeUpdate();
             if (count == 0) {
-                throw new RuntimeException("Room " + room + " was not found in database!");
+                throw new ServiceFailureException("Room " + room + " was not found in database!");
             } else if (count != 1) {
-                throw new RuntimeException("Invalid deleted rows count detected (one row should be updated): " + count);
+                throw new ServiceFailureException("Invalid deleted rows count detected (one row should be updated): " + count);
             }
         } catch (SQLException ex) {
             throw new ServiceFailureException(

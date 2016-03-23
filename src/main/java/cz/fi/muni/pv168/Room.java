@@ -22,13 +22,6 @@ public class Room {
         this.price = room.price;
     }
 
-    public Room(int number, int numberOfBeds, boolean balcony, BigDecimal price) {
-        this.number = number;
-        this.numberOfBeds = numberOfBeds;
-        this.balcony = balcony;
-        this.price = price;
-    }
-
     public Long getId() {
         return id;
     }
@@ -76,12 +69,16 @@ public class Room {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Room room = (Room) o;
 
-        return id != null ? id.equals(room.id) : room.id == null;
+        return id != null ? id.equals(room.id) : false;
 
     }
 

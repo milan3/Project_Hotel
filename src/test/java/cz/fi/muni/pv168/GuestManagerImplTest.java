@@ -1,6 +1,7 @@
 package cz.fi.muni.pv168;
 
 import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,14 +19,15 @@ import static org.junit.Assert.*;
 
 public class GuestManagerImplTest {
     private GuestManager manager;
+    private DataSource dataSource;
 
     @Before
     public void setUp()  throws SQLException {
-        DataSource dataSource = prepareDataSource();
+        dataSource = prepareDataSource();
         try (Connection connection = dataSource.getConnection()) {
             connection.prepareStatement("CREATE TABLE GUEST ("
                     + "id bigint primary key generated always as identity,"
-                    + "fullName string").executeUpdate();
+                    + "fullName VARCHAR(255))").executeUpdate();
         }
         manager = new GuestManagerImpl(dataSource);
     }
@@ -35,6 +37,13 @@ public class GuestManagerImplTest {
         ds.setDatabaseName("memory:roommanager-test");
         ds.setCreateDatabase("create");
         return ds;
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.prepareStatement("DROP TABLE GUEST").executeUpdate();
+        }
     }
 
     @Test

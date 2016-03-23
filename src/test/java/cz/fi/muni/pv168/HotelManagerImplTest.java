@@ -28,7 +28,7 @@ public class HotelManagerImplTest {
     public void accommodateGuest() {
         Guest guest = new Guest("john");
         guestManager.createGuest(guest);
-        Room room = new Room(3, 2, true, new BigDecimal(15));
+        Room room = newRoom(3, 2, true, new BigDecimal(15));
         hotelManager.accommodateGuest(room, guest);
 
         List<Guest> result = new ArrayList<>(hotelManager.findGuests(room));

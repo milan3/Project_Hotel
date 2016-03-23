@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -52,7 +53,7 @@ public class RoomManagerImplTest {
 
     @Test
     public void createRoom() {
-        Room room = new Room(4, 2, true, new BigDecimal(12.5));
+        Room room = newRoom(4, 2, true, new BigDecimal(12.5));
         manager.createRoom(room);
 
         Long id = room.getId();
@@ -71,7 +72,7 @@ public class RoomManagerImplTest {
     @Test
     public void createWithWrongValues() {
 
-        Room room = new Room(4, 2, true, new BigDecimal(12.5));
+        Room room = newRoom(4, 2, true, new BigDecimal(12.5));
         room.setId(1L);
         try {
             manager.createRoom(room);
@@ -80,7 +81,7 @@ public class RoomManagerImplTest {
             //OK
         }
 
-        room = new Room(-1, 2, true, new BigDecimal(12.5));
+        room = newRoom(-1, 2, true, new BigDecimal(12.5));
         try {
             manager.createRoom(room);
             fail("number of beds must be positive number");
@@ -88,7 +89,7 @@ public class RoomManagerImplTest {
             //OK
         }
 
-        room = new Room(4, 2, true, new BigDecimal(-12.5));
+        room = newRoom(4, 2, true, new BigDecimal(-12.5));
         try {
             manager.createRoom(room);
             fail("price must be positive number");
@@ -102,8 +103,8 @@ public class RoomManagerImplTest {
     @Test
     public void deleteRoom() {
 
-        Room room1 = new Room(4, 2, true, new BigDecimal(12.5));
-        Room room2 = new Room(1, 5, false, new BigDecimal(8.5));
+        Room room1 = newRoom(4, 3, true, new BigDecimal(12.5));
+        Room room2 = newRoom(1, 5, false, new BigDecimal(8.5));
         manager.createRoom(room1);
         manager.createRoom(room2);
 
@@ -129,8 +130,8 @@ public class RoomManagerImplTest {
 
         //assertTrue(manager.getAllRooms().isEmpty());
 
-        Room room1 = new Room(4, 2, true, new BigDecimal(12.5));
-        Room room2 = new Room(1, 5, false, new BigDecimal(8.5));
+        Room room1 = newRoom(4, 2, true, new BigDecimal(12.5));
+        Room room2 = newRoom(1, 5, false, new BigDecimal(8.5));
 
         manager.createRoom(room1);
         manager.createRoom(room2);
