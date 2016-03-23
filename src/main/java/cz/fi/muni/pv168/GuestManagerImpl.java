@@ -1,7 +1,13 @@
 package cz.fi.muni.pv168;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,15 +17,31 @@ import java.util.List;
 public class GuestManagerImpl implements GuestManager {
     private JdbcTemplate jdbc;
 
+    private RowMapper<Guest> guestMapper = (rs, rowNum) ->  {
+        Guest guest = new Guest();
+        guest.setId(rs.getLong("id"));
+        guest.setFullName(rs.getString("fullName"));
+
+        return guest;
+    };
+
     @Override
     public void createGuest(Guest guest) {
         if (guest == null)
             throw  new IllegalArgumentException();
+
+        SimpleJdbcInsert insertGuest = new SimpleJdbcInsert(jdbc).withTableName("guests").usingGeneratedKeyColumns("id");
+
+        SqlParameterSource parameters = new MapSqlParameterSource()
+                                                .addValue("fullName", guest.getFullName());
+
+        Number id = insertGuest.executeAndReturnKey(parameters);
+        guest.setId(id.longValue());
     }
 
     @Override
     public void updateGuest(Guest guest) {
-
+        jdbc.update("UPDATE guests set fullName=? WHERE id=?", guest.getFullName());
     }
 
     @Override
@@ -30,15 +52,11 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public Guest getGuest(Long id) {
-        return null;
+        return jdbc.query("SELECT * FROM guests WHERE id=?", guestMapper, id);
     }
 
     @Override
     public List<Guest> getAllGuests() {
-        List<Guest> guests = new ArrayList<>();
-
-
-
-        return guests;
+        return jdbc.query("SELECT * FROM guests", guestMapper);
     }
 }
