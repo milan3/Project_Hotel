@@ -2,13 +2,11 @@ package cz.fi.muni.pv168;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -16,6 +14,10 @@ import java.util.List;
  */
 public class GuestManagerImpl implements GuestManager {
     private JdbcTemplate jdbc;
+
+    public GuestManagerImpl(DataSource dataSource) {
+        this.jdbc = new JdbcTemplate(dataSource);
+    }
 
     private RowMapper<Guest> guestMapper = (rs, rowNum) ->  {
         Guest guest = new Guest();
@@ -52,7 +54,7 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public Guest getGuest(Long id) {
-        return jdbc.query("SELECT * FROM guests WHERE id=?", guestMapper, id);
+        return jdbc.queryForObject("SELECT * FROM guests WHERE id=?", guestMapper, id);
     }
 
     @Override

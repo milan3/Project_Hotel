@@ -20,7 +20,7 @@ public class HotelManagerImplTest {
     @Before
     public void setUp() {
         hotelManager = new HotelManagerImpl(null, null);
-        guestManager = new GuestManagerImpl();
+        guestManager = new GuestManagerImpl(null);
         roomManager = new RoomManagerImpl(null);
     }
 

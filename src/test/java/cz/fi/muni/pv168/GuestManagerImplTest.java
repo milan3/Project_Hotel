@@ -1,8 +1,12 @@
 package cz.fi.muni.pv168;
 
+import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -16,8 +20,21 @@ public class GuestManagerImplTest {
     private GuestManager manager;
 
     @Before
-    public void setUp() {
-        manager = new GuestManagerImpl();
+    public void setUp()  throws SQLException {
+        DataSource dataSource = prepareDataSource();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.prepareStatement("CREATE TABLE GUEST ("
+                    + "id bigint primary key generated always as identity,"
+                    + "fullName string").executeUpdate();
+        }
+        manager = new GuestManagerImpl(dataSource);
+    }
+
+    private static DataSource prepareDataSource() throws SQLException {
+        EmbeddedDataSource ds = new EmbeddedDataSource();
+        ds.setDatabaseName("memory:roommanager-test");
+        ds.setCreateDatabase("create");
+        return ds;
     }
 
     @Test

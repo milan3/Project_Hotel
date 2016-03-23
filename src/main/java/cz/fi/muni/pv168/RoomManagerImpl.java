@@ -173,8 +173,7 @@ public class RoomManagerImpl implements RoomManager {
     }
 
     public List<Room> getAllRooms() {
-        try (
-                Connection connection = dataSource.getConnection();
+        try (Connection connection = dataSource.getConnection();
                 PreparedStatement st = connection.prepareStatement(
                         "SELECT id,number,numberOfBeds,balcony,price FROM room")) {
 
