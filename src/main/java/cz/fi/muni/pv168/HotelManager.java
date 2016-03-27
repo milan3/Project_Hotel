@@ -8,7 +8,7 @@ import java.util.List;
 public interface HotelManager {
     List<Guest> findGuests(Room room);
     List<Room> getRooms(int floor);
-    Accommodation accommodateGuest(Room room, Guest guest);
+    void accommodateGuest(Room room, Guest guest);
     void cancelAccommodation(Accommodation accommodation);
     List<Room> getAvailableRooms();
     boolean isAvailable(Room room);

@@ -127,8 +127,7 @@ public class RoomManagerImplTest {
 
     @Test
     public void getAllRooms() {
-
-        //assertTrue(manager.getAllRooms().isEmpty());
+        assertTrue(manager.getAllRooms().isEmpty());
 
         Room room1 = newRoom(4, 2, true, new BigDecimal(12.5));
         Room room2 = newRoom(1, 5, false, new BigDecimal(8.5));

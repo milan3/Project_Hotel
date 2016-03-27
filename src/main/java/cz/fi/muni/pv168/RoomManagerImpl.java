@@ -1,9 +1,12 @@
 package cz.fi.muni.pv168;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+
 import javax.sql.DataSource;
-import javax.xml.ws.Service;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,10 +14,10 @@ import java.util.List;
  */
 public class RoomManagerImpl implements RoomManager {
 
-    private final DataSource dataSource;
+    private final JdbcTemplate jdbc;
 
     public RoomManagerImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this.jdbc = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -25,169 +28,56 @@ public class RoomManagerImpl implements RoomManager {
             throw new IllegalArgumentException("room id is already set");
         }
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement st = connection.prepareStatement(
-                     "INSERT INTO ROOM (number,numberOfBeds,balcony,price) VALUES (?,?,?,?)",
-                     Statement.RETURN_GENERATED_KEYS)) {
+        SimpleJdbcInsert insertRoom = new SimpleJdbcInsert(jdbc).withTableName("room").usingGeneratedKeyColumns("id");
 
-            st.setInt(1, room.getNumber());
-            st.setInt(2, room.getNumberOfBeds());
-            st.setBoolean(3, room.hasBalcony());
-            st.setBigDecimal(4, room.getPrice());
+        SqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("number", room.getNumber())
+                .addValue("numberOfBeds", room.getNumberOfBeds())
+                .addValue("balcony", room.hasBalcony())
+                .addValue("price", room.getPrice());
 
-            int addedRows = st.executeUpdate();
-
-            if (addedRows != 1)
-            {
-                throw new ServiceFailureException("Internal error: More rows inserted while trying to insert room " + room);
-            }
-
-            ResultSet keyRs = st.getGeneratedKeys();
-            if (keyRs == null) {
-                System.out.println("key je null");
-            }
-            room.setId(getKey(keyRs, room));
-        } catch(SQLException ex) {
-            throw new ServiceFailureException("Error while inserting room " + room, ex);
-        }
-    }
-
-    private Long getKey(ResultSet keyRS, Room room) throws RuntimeException, SQLException {
-        if (keyRS.next()) {
-            if (keyRS.getMetaData().getColumnCount() != 1) {
-                throw new ServiceFailureException("Internal Error: Generated key"
-                        + "retrieving failed when trying to insert room " + room
-                        + " - wrong key fields count: " + keyRS.getMetaData().getColumnCount());
-            }
-            Long result = keyRS.getLong(1);
-            if (keyRS.next()) {
-                throw new ServiceFailureException("Internal Error: Generated key"
-                        + "retrieving failed when trying to insert room " + room
-                        + " - more keys found");
-            }
-            return result;
-        } else {
-            throw new ServiceFailureException("Internal Error: Generated key"
-                    + "retrieving failed when trying to insert room " + room
-                    + " - no key found");
-        }
+        Number id = insertRoom.executeAndReturnKey(parameters);
+        room.setId(id.longValue());
     }
 
     public void updateRoom(Room room) throws ServiceFailureException {
         validate(room);
+
         if (room.getId() == null) {
             throw new IllegalArgumentException("room id is null");
         }
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement st = connection.prepareStatement(
-                        "UPDATE Room SET number = ?, numberOfBeds = ?, balcony = ?, price = ? WHERE id = ?")) {
-
-            st.setInt(1, room.getNumber());
-            st.setInt(2, room.getNumberOfBeds());
-            st.setBoolean(3, room.hasBalcony());
-            st.setBigDecimal(4, room.getPrice());
-            st.setLong(5, room.getId());
-
-            int count = st.executeUpdate();
-
-            if (count == 0) {
-                throw new EntityNotFoundException("Room " + room + " was not found in database!");
-            } else if (count != 1) {
-                throw new ServiceFailureException("Invalid updated rows count detected (one row should be updated): " + count);
-            }
-        } catch (SQLException ex) {
-            throw new ServiceFailureException(
-                    "Error when updating room " + room, ex);
-        }
+        jdbc.update("UPDATE room set number=?, numberOfBeds = ?, balcony = ?, price = ? WHERE id=?", room.getNumber(), room.getNumberOfBeds(), room.hasBalcony(), room.getPrice(), room.getId());
     }
 
     public void deleteRoom(Room room) throws RuntimeException {
-        if (room == null) {
-            throw new IllegalArgumentException("room is null");
-        }
+        validate(room);
 
         if (room.getId() == null) {
             throw new IllegalArgumentException("room id is null");
         }
 
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement st = connection.prepareStatement(
-                        "DELETE FROM room WHERE id = ?")) {
-
-            st.setLong(1, room.getId());
-
-            int count = st.executeUpdate();
-            if (count == 0) {
-                throw new ServiceFailureException("Room " + room + " was not found in database!");
-            } else if (count != 1) {
-                throw new ServiceFailureException("Invalid deleted rows count detected (one row should be updated): " + count);
-            }
-        } catch (SQLException ex) {
-            throw new ServiceFailureException(
-                    "Error when updating room " + room, ex);
+        try {
+            jdbc.update("DELETE FROM ROOM WHERE ID = ? ", room.getId());
+        } catch(EmptyResultDataAccessException ex) {
+            throw new ServiceFailureException("Room does not exist");
         }
-
     }
 
     public Room getRoom(Long id) {
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement st = connection.prepareStatement(
-                        "SELECT id,number,numberOfBeds,balcony,price FROM room WHERE id = ?")) {
-
-            st.setLong(1, id);
-            ResultSet rs = st.executeQuery();
-
-            if (rs.next()) {
-                Room room = resultSetToRoom(rs);
-
-                if (rs.next()) {
-                    throw new ServiceFailureException(
-                            "Internal error: More entities with the same id found "
-                                    + "(source id: " + id + ", found " + room + " and " + resultSetToRoom(rs));
-                }
-
-                return room;
-            } else {
-                return null;
-            }
-
-        } catch (SQLException ex) {
-            throw new ServiceFailureException(
-                    "Error when retrieving room with id " + id, ex);
+        if (id == null) {
+            throw new IllegalArgumentException("id is null");
         }
 
-    }
-
-    private Room resultSetToRoom(ResultSet rs) throws SQLException {
-        Room room = new Room();
-        room.setId(rs.getLong("id"));
-        room.setNumber(rs.getInt("number"));
-        room.setNumberOfBeds(rs.getInt("numberOfBeds"));
-        room.setBalcony(rs.getBoolean("balcony"));
-        room.setPrice(rs.getBigDecimal("price"));
-        return room;
+        try {
+            return jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 
     public List<Room> getAllRooms() {
-        try (Connection connection = dataSource.getConnection();
-                PreparedStatement st = connection.prepareStatement(
-                        "SELECT id,number,numberOfBeds,balcony,price FROM room")) {
-
-            ResultSet rs = st.executeQuery();
-
-            List<Room> result = new ArrayList<>();
-            while (rs.next()) {
-                result.add(resultSetToRoom(rs));
-            }
-            return result;
-
-        } catch (SQLException ex) {
-            throw new ServiceFailureException(
-                    "Error when retrieving all rooms", ex);
-        }
+        return jdbc.query("SELECT * FROM room", RowMappers.roomMapper);
     }
 
 

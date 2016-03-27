@@ -2,7 +2,6 @@ package cz.fi.muni.pv168;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -15,23 +14,19 @@ import java.util.List;
  */
 public class GuestManagerImpl implements GuestManager {
     private JdbcTemplate jdbc;
+    static private String GUEST_NULL = "guest is null";
 
     public GuestManagerImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
-    private RowMapper<Guest> guestMapper = (rs, rowNum) ->  {
-        Guest guest = new Guest();
-        guest.setId(rs.getLong("id"));
-        guest.setFullName(rs.getString("fullName"));
-
-        return guest;
-    };
-
     @Override
     public void createGuest(Guest guest) {
-        if (guest == null)
-            throw  new IllegalArgumentException();
+        validate(guest);
+
+        if (guest.getId() != null) {
+            throw new IllegalArgumentException("guest id is already set");
+        }
 
         SimpleJdbcInsert insertGuest = new SimpleJdbcInsert(jdbc).withTableName("guest").usingGeneratedKeyColumns("id");
 
@@ -44,20 +39,22 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public void updateGuest(Guest guest) {
-        if (guest == null) {
-            throw new IllegalArgumentException();
-        }
+        validate(guest);
 
         if (guest.getId() == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("guest id is null");
         }
         jdbc.update("UPDATE guest set fullName=? WHERE id=?", guest.getFullName(), guest.getId());
     }
 
     @Override
     public void deleteGuest(Guest guest) {
-        if (guest == null)
-            throw  new IllegalArgumentException();
+        validate(guest);
+
+        if (guest.getId() == null) {
+            throw new IllegalArgumentException("guest id is null");
+        }
+
         try {
             jdbc.update("DELETE FROM GUEST WHERE ID = ? ", guest.getId());
         } catch(EmptyResultDataAccessException ex) {
@@ -67,8 +64,12 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public Guest getGuest(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id is null");
+        }
+
         try {
-            return jdbc.queryForObject("SELECT * FROM guest WHERE id=?", guestMapper, id);
+            return jdbc.queryForObject("SELECT * FROM guest WHERE id=?", RowMappers.guestMapper, id);
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
@@ -77,6 +78,15 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public List<Guest> getAllGuests() {
-        return jdbc.query("SELECT * FROM guest", guestMapper);
+        return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
+    }
+
+    private void validate(Guest guest) {
+        if (guest == null) {
+            throw new IllegalArgumentException(GUEST_NULL);
+        }
+        if (guest.getFullName() == null || guest.getFullName().equals("")) {
+            throw new IllegalArgumentException("guest fullName is unset");
+        }
     }
 }
