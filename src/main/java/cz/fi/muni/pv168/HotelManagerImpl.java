@@ -94,9 +94,15 @@ public class HotelManagerImpl implements HotelManager {
     }
 
     @Override
-    public void cancelAccommodation(Accommodation accommodation) {
+    public void cancelAccommodation(Guest guest) {
+        if (guest == null) {
+            throw new IllegalArgumentException("guest is null");
+        }
+
+        Accommodation accommodation = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE GUEST=?", new RowMappers(roomManager, guestManager).accommodationMapper, guest.getId());
+
         if (accommodation == null) {
-            throw new IllegalArgumentException("accommodation is null");
+            throw new ServiceFailureException("guest have no accommodation");
         }
 
         try {
@@ -131,9 +137,10 @@ public class HotelManagerImpl implements HotelManager {
     }
 
     private static Timestamp toTimestamp(LocalDate localDate) {
-        Date date = Date.from(localDate.atStartOfDay()
+        /*Date date = Date.from(localDate.atStartOfDay()
                 .atZone(ZoneId.systemDefault()).toInstant());
-        Timestamp timeStamp = new Timestamp(date.getTime());
-        return timeStamp;
+        Timestamp timeStamp = new Timestamp(date.getTime());*/
+        return Timestamp.valueOf(localDate.atStartOfDay()); //takto je to kratsie :D
+        //return timeStamp;
     }
 }

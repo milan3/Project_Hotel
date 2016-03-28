@@ -10,7 +10,7 @@ public interface HotelManager {
     List<Guest> findGuests(Room room);
     List<Room> getRooms(int floor);
     void accommodateGuest(Room room, Guest guest, LocalDate arrival, LocalDate departure);
-    void cancelAccommodation(Accommodation accommodation);
+    void cancelAccommodation(Guest guest);
     List<Room> getAvailableRooms();
     boolean isAvailable(Room room);
 }

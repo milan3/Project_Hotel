@@ -154,7 +154,7 @@ public class HotelManagerImplTest {
         assertTrue("Room should be available", hotelManager.isAvailable(room2));
     }
 
-/*
+
     @Test
     public void cancelAccommodation() {
         Guest guest1 = newGuest("john");
@@ -169,12 +169,13 @@ public class HotelManagerImplTest {
         List<Guest> result = new ArrayList<>(hotelManager.findGuests(room));
         assertTrue("saved accommodations weren't found", result.contains(guest1) && result.contains(guest2));
         assertTrue("2 guests should be found", result.size() == 2);
-        hotelManager.cancelAccommodation(hotelManager.getAccommodationOfGuest(guest1));
+        hotelManager.cancelAccommodation(guest1);
 
+        result = new ArrayList<>(hotelManager.findGuests(room));
         assertTrue("saved accommodation wasn't found", result.contains(guest2));
-        assertTrue("1 guests should be found", result.size() == 1);
+        assertThat("1 guest should be found", result.size(), is(equalTo(1)));
 
-    }*/
+    }
 
 
     public static Room newRoom(int number, int numberOfBeds, boolean balcony, BigDecimal price)
