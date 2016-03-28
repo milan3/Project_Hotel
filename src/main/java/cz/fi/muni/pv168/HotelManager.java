@@ -1,5 +1,6 @@
 package cz.fi.muni.pv168;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
 public interface HotelManager {
     List<Guest> findGuests(Room room);
     List<Room> getRooms(int floor);
-    void accommodateGuest(Room room, Guest guest);
+    void accommodateGuest(Room room, Guest guest, LocalDate arrival, LocalDate departure);
     void cancelAccommodation(Accommodation accommodation);
     List<Room> getAvailableRooms();
     boolean isAvailable(Room room);

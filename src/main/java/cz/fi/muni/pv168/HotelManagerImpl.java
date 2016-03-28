@@ -2,6 +2,7 @@ package cz.fi.muni.pv168;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -9,7 +10,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,7 +66,7 @@ public class HotelManagerImpl implements HotelManager {
     }
 
     @Override
-    public void accommodateGuest(Room room, Guest guest) {
+    public void accommodateGuest(Room room, Guest guest, LocalDate arrival, LocalDate departure) {
         if (room == null) {
             throw new IllegalArgumentException("room is null");
         }
@@ -71,11 +74,19 @@ public class HotelManagerImpl implements HotelManager {
             throw new IllegalArgumentException("guest is null");
         }
 
+        if (!isAvailable(room)) {
+            throw new ServiceFailureException("Room is not available");
+        }
+
+        if (arrival.compareTo(departure) > 0) {
+            throw new ServiceFailureException("departure must be after arrival");
+        }
+
         SimpleJdbcInsert insertAccommodation = new SimpleJdbcInsert(jdbc).withTableName("accommodation").usingGeneratedKeyColumns("id");
 
         SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("arrival", Timestamp.valueOf(LocalDate.now().atStartOfDay()))
-                .addValue("departure", Timestamp.valueOf(LocalDate.now().atStartOfDay()))
+                .addValue("arrival", toTimestamp(arrival))
+                .addValue("departure", toTimestamp(departure))
                 .addValue("room", room.getId())
                 .addValue("guest", guest.getId());
 
@@ -117,5 +128,12 @@ public class HotelManagerImpl implements HotelManager {
         List<Guest> guests = findGuests(room);
 
         return guests.size() < room.getNumberOfBeds();
+    }
+
+    private static Timestamp toTimestamp(LocalDate localDate) {
+        Date date = Date.from(localDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault()).toInstant());
+        Timestamp timeStamp = new Timestamp(date.getTime());
+        return timeStamp;
     }
 }

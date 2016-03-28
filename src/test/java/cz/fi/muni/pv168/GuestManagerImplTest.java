@@ -142,5 +142,12 @@ public class GuestManagerImplTest {
         }
     }
 
+    public static Guest newGuest(String fullName)
+    {
+        Guest guest = new Guest();
+        guest.setFullName(fullName);
+        return guest;
+    }
+
     private static Comparator<Guest> idComparator = (o1, o2) -> o1.getId().compareTo(o2.getId());
 }
