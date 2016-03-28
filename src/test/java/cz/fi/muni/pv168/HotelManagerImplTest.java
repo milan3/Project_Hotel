@@ -168,7 +168,7 @@ public class HotelManagerImplTest {
 
         List<Guest> result = new ArrayList<>(hotelManager.findGuests(room));
         assertTrue("saved accommodations weren't found", result.contains(guest1) && result.contains(guest2));
-        assertThat("2 guests should be found", result.size(), is(equalTo(2));
+        assertThat("2 guests should be found", result.size(), is(equalTo(2)));
         hotelManager.cancelAccommodation(guest1);
 
         result = new ArrayList<>(hotelManager.findGuests(room));
