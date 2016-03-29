@@ -48,7 +48,7 @@ public class HotelManagerImpl implements HotelManager {
 
     @Override
     public List<Room> getRooms(int floor) {
-        if (floor < 0) {
+        if (floor < 1) {
             throw new IllegalArgumentException("floor is negative number");
         }
 
