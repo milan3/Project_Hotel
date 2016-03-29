@@ -129,6 +129,25 @@ public class HotelManagerImplTest {
     }
 
     @Test
+    public void getRooms() {
+        Room room1 = newRoom(100, 1, false, BigDecimal.valueOf(100));
+        Room room2 = newRoom(101, 3, false, BigDecimal.valueOf(100));
+        Room room3 = newRoom(201, 3, false, BigDecimal.valueOf(100));
+        roomManager.createRoom(room1);
+        roomManager.createRoom(room2);
+        roomManager.createRoom(room3);
+        List<Room> rooms = hotelManager.getRooms(1);
+        assertThat("Exactly 2 rooms should be found", rooms.size(), is(equalTo(2)));
+        assertTrue("Wrong rooms found", rooms.contains(room1) && rooms.contains(room2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getRoomsWrongParam() {
+        hotelManager.getRooms(-1);
+    }
+
+
+    @Test
     public void testIsAvailable() throws Exception {
         //-----------------number,beds,...
         Room room1 = newRoom(100, 1, false, BigDecimal.valueOf(100));
