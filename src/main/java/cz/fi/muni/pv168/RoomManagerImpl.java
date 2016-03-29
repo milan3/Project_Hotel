@@ -85,7 +85,7 @@ public class RoomManagerImpl implements RoomManager {
         if (room == null) {
             throw new IllegalArgumentException("room is null");
         }
-        if (room.getNumber() < 0) {
+        if (room.getNumber() < 100) {
             throw new IllegalArgumentException("number of room is negative");
         }
         if (room.getNumberOfBeds() < 0) {
