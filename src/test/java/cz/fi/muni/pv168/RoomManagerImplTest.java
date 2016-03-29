@@ -53,7 +53,7 @@ public class RoomManagerImplTest {
 
     @Test
     public void createRoom() {
-        Room room = newRoom(4, 2, true, new BigDecimal(12.5));
+        Room room = newRoom(104, 2, true, new BigDecimal(12.5));
         manager.createRoom(room);
 
         Long id = room.getId();
@@ -72,7 +72,7 @@ public class RoomManagerImplTest {
     @Test
     public void createWithWrongValues() {
 
-        Room room = newRoom(4, 2, true, new BigDecimal(12.5));
+        Room room = newRoom(104, 2, true, new BigDecimal(12.5));
         room.setId(1L);
         try {
             manager.createRoom(room);
@@ -81,7 +81,15 @@ public class RoomManagerImplTest {
             //OK
         }
 
-        room = newRoom(-1, 2, true, new BigDecimal(12.5));
+        room = newRoom(99, 2, true, new BigDecimal(12.5));
+        try {
+            manager.createRoom(room);
+            fail("number of room must be more than 99");
+        } catch (IllegalArgumentException ex) {
+            //OK
+        }
+
+        room = newRoom(104, -2, true, new BigDecimal(-12.5));
         try {
             manager.createRoom(room);
             fail("number of beds must be positive number");
@@ -89,7 +97,7 @@ public class RoomManagerImplTest {
             //OK
         }
 
-        room = newRoom(4, 2, true, new BigDecimal(-12.5));
+        room = newRoom(104, 2, true, new BigDecimal(-12.5));
         try {
             manager.createRoom(room);
             fail("price must be positive number");
@@ -103,8 +111,8 @@ public class RoomManagerImplTest {
     @Test
     public void deleteRoom() {
 
-        Room room1 = newRoom(4, 3, true, new BigDecimal(12.5));
-        Room room2 = newRoom(1, 5, false, new BigDecimal(8.5));
+        Room room1 = newRoom(104, 3, true, new BigDecimal(12.5));
+        Room room2 = newRoom(101, 5, false, new BigDecimal(8.5));
         manager.createRoom(room1);
         manager.createRoom(room2);
 
@@ -129,8 +137,8 @@ public class RoomManagerImplTest {
     public void getAllRooms() {
         assertTrue(manager.getAllRooms().isEmpty());
 
-        Room room1 = newRoom(4, 2, true, new BigDecimal(12.5));
-        Room room2 = newRoom(1, 5, false, new BigDecimal(8.5));
+        Room room1 = newRoom(104, 2, true, new BigDecimal(12.5));
+        Room room2 = newRoom(101, 5, false, new BigDecimal(8.5));
 
         manager.createRoom(room1);
         manager.createRoom(room2);

@@ -74,7 +74,7 @@ public class HotelManagerImplTest {
     public void accommodateGuest() {
         Guest guest = newGuest("john");
         guestManager.createGuest(guest);
-        Room room = newRoom(3, 2, true, new BigDecimal(15));
+        Room room = newRoom(103, 2, true, new BigDecimal(15));
         roomManager.createRoom(room);
         hotelManager.accommodateGuest(room, guest, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
 
@@ -88,7 +88,7 @@ public class HotelManagerImplTest {
         guestManager.createGuest(guest1);
         Guest guest2 = newGuest("jack");
         guestManager.createGuest(guest2);
-        Room room = newRoom(3, 1, true, new BigDecimal(15));  // room with only one bed
+        Room room = newRoom(103, 1, true, new BigDecimal(15));  // room with only one bed
         roomManager.createRoom(room);
         hotelManager.accommodateGuest(room, guest1, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
 
@@ -102,7 +102,7 @@ public class HotelManagerImplTest {
     public void accommodateGuestWrongDates() {
         Guest guest = newGuest("john");
         guestManager.createGuest(guest);
-        Room room = newRoom(3, 2, true, new BigDecimal(15));
+        Room room = newRoom(103, 2, true, new BigDecimal(15));
         roomManager.createRoom(room);
         hotelManager.accommodateGuest(room, guest, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 7, 18));
     }
@@ -113,7 +113,7 @@ public class HotelManagerImplTest {
         guestManager.createGuest(guest1);
         Guest guest2 = newGuest("jack");
         guestManager.createGuest(guest2);
-        Room room = newRoom(3, 2, true, new BigDecimal(15));
+        Room room = newRoom(103, 2, true, new BigDecimal(15));
         roomManager.createRoom(room);
         hotelManager.accommodateGuest(room, guest1, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
         hotelManager.accommodateGuest(room, guest2, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
@@ -180,7 +180,7 @@ public class HotelManagerImplTest {
         guestManager.createGuest(guest1);
         Guest guest2 = newGuest("jack");
         guestManager.createGuest(guest2);
-        Room room = newRoom(3, 2, true, new BigDecimal(15));
+        Room room = newRoom(103, 2, true, new BigDecimal(15));
         roomManager.createRoom(room);
         hotelManager.accommodateGuest(room, guest1, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
         hotelManager.accommodateGuest(room, guest2, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
