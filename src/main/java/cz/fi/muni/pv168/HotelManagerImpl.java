@@ -49,7 +49,7 @@ public class HotelManagerImpl implements HotelManager {
     @Override
     public List<Room> getRooms(int floor) {
         if (floor < 1) {
-            throw new IllegalArgumentException("floor is negative number");
+            throw new IllegalArgumentException("floor is not positive number");
         }
 
         List<Room> allRooms = roomManager.getAllRooms();
@@ -137,10 +137,6 @@ public class HotelManagerImpl implements HotelManager {
     }
 
     private static Timestamp toTimestamp(LocalDate localDate) {
-        /*Date date = Date.from(localDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault()).toInstant());
-        Timestamp timeStamp = new Timestamp(date.getTime());*/
-        return Timestamp.valueOf(localDate.atStartOfDay()); //takto je to kratsie :D
-        //return timeStamp;
+        return Timestamp.valueOf(localDate.atStartOfDay());
     }
 }

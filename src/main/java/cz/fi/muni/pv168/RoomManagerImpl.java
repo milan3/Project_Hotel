@@ -27,6 +27,9 @@ public class RoomManagerImpl implements RoomManager {
         if (room.getId() != null) {
             throw new IllegalArgumentException("room id is already set");
         }
+        if (roomNumberExists(room)) {
+            throw new ServiceFailureException("room with the same number already exists");
+        }
 
         SimpleJdbcInsert insertRoom = new SimpleJdbcInsert(jdbc).withTableName("room").usingGeneratedKeyColumns("id");
 
@@ -46,7 +49,9 @@ public class RoomManagerImpl implements RoomManager {
         if (room.getId() == null) {
             throw new IllegalArgumentException("room id is null");
         }
-
+        if (roomNumberExists(room)) {
+            throw new ServiceFailureException("room with the same number already exists");
+        }
         jdbc.update("UPDATE room set number=?, numberOfBeds = ?, balcony = ?, price = ? WHERE id=?", room.getNumber(), room.getNumberOfBeds(), room.hasBalcony(), room.getPrice(), room.getId());
     }
 
@@ -94,5 +99,16 @@ public class RoomManagerImpl implements RoomManager {
         if (room.getPrice().doubleValue() < 0) {
             throw new IllegalArgumentException("price is negative");
         }
+    }
+
+    private boolean roomNumberExists(Room room) {
+        for (Room other : getAllRooms()) {
+            if (    room.getNumber() == other.getNumber() && ((room.getId() == null) ||
+                    (room.getId() != null && room.getId() != other.getId()))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
