@@ -43,6 +43,7 @@ public class RoomManagerImpl implements RoomManager {
         room.setId(id.longValue());
     }
 
+    @Override
     public void updateRoom(Room room) throws ServiceFailureException {
         validate(room);
 
@@ -55,6 +56,7 @@ public class RoomManagerImpl implements RoomManager {
         jdbc.update("UPDATE room set number=?, numberOfBeds = ?, balcony = ?, price = ? WHERE id=?", room.getNumber(), room.getNumberOfBeds(), room.hasBalcony(), room.getPrice(), room.getId());
     }
 
+    @Override
     public void deleteRoom(Room room) throws RuntimeException {
         validate(room);
 
@@ -69,6 +71,7 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
+    @Override
     public Room getRoom(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id is null");
@@ -81,10 +84,10 @@ public class RoomManagerImpl implements RoomManager {
         }
     }
 
+    @Override
     public List<Room> getAllRooms() {
         return jdbc.query("SELECT * FROM room", RowMappers.roomMapper);
     }
-
 
     private void validate(Room room) {
         if (room == null) {

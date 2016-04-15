@@ -37,10 +37,15 @@ public class HotelManagerImpl implements HotelManager {
         }
 
         List<Guest> guests = new ArrayList<>();
-        List<Accommodation> accommodations = jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", new RowMappers(roomManager, guestManager).accommodationMapper, room.getId());
 
-        for (Accommodation acc : accommodations) {
-            guests.add(acc.getGuest());
+        //it fails when there is no accommodation in database
+        try {
+            List<Accommodation> accommodations = jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", new RowMappers(roomManager, guestManager).accommodationMapper, room.getId());
+            for (Accommodation acc : accommodations) {
+                guests.add(acc.getGuest());
+            }
+        } catch (Exception e) {
+
         }
 
         return guests;
@@ -126,6 +131,7 @@ public class HotelManagerImpl implements HotelManager {
         return availableRooms;
     }
 
+    @Override
     public boolean isAvailable(Room room) {
         if (room == null) {
             throw new IllegalArgumentException("room is null");
