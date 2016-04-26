@@ -52,7 +52,7 @@ public class GuestAccommodationWindow extends javax.swing.JFrame {
 
         jLabel4.setText("Room");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "000", "100", "101", "102" }));
 
         jButton1.setText("submit");
 
