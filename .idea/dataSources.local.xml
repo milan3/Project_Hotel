@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Derby (Remote) - roommanager-test@localhost" uuid="3f32b725-ae79-453d-874b-cab474b22b0a">
+      <secret-storage>master_key</secret-storage>
+      <first-sync>true</first-sync>
+      <user-name>Buckyx</user-name>
+    </data-source>
+  </component>
+</project>
