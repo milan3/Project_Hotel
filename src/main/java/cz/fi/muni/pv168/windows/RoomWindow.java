@@ -77,6 +77,7 @@ public class RoomWindow extends javax.swing.JFrame {
         jCheckBox1.setText("Has balcony");
 
         buttonGroup8.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
         jRadioButton1.setText("add new room");
 
         buttonGroup8.add(jRadioButton2);

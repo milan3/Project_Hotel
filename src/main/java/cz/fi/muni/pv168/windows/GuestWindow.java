@@ -67,6 +67,7 @@ public class GuestWindow extends javax.swing.JFrame {
         addButton.setText("Submit");
 
         buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
         jRadioButton1.setText("add new guest");
         jRadioButton1.setToolTipText("");
 
