@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Wed Apr 27 10:52:47 CEST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0154-56eb-af45-000004937c90 
-on database directory memory:C:\Users\Radac\Desktop\PV168\hw02\Hotel Manager\Project_Hotel\roommanager-test with class loader sun.misc.Launcher$AppClassLoader@75b84c92 
-Loaded from file:/C:/Users/Radac/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
+Wed Apr 27 11:22:56 CEST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0154-5707-4b17-00000395b930 
+on database directory memory:C:\Users\Milan\Desktop\Project_Hotel\roommanager-test with class loader sun.misc.Launcher$AppClassLoader@75b84c92 
+Loaded from file:/C:/Users/Milan/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_60-b27
-user.dir=C:\Users\Radac\Desktop\PV168\hw02\Hotel Manager\Project_Hotel
-os.name=Windows 8.1
+user.dir=C:\Users\Milan\Desktop\Project_Hotel
+os.name=Windows 10
 os.arch=amd64
-os.version=6.3
+os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

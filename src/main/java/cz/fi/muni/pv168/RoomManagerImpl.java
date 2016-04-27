@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -16,23 +18,27 @@ public class RoomManagerImpl implements RoomManager {
 
     private final JdbcTemplate jdbc;
 
-    public RoomManagerImpl(DataSource dataSource) {
+    final static Logger logger = LoggerFactory.getLogger(RoomManagerImpl.class);
+    
+    public RoomManagerImpl(DataSource dataSource) { 
+        
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
     @Override
     public void createRoom(Room room) {
+        logger.debug("Creating Room: "+room);
         validate(room);
-
+        
         if (room.getId() != null) {
             throw new IllegalArgumentException("room id is already set");
         }
         if (roomNumberExists(room)) {
             throw new ServiceFailureException("room with the same number already exists");
         }
-
+        
         SimpleJdbcInsert insertRoom = new SimpleJdbcInsert(jdbc).withTableName("room").usingGeneratedKeyColumns("id");
-
+        
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("number", room.getNumber())
                 .addValue("numberOfBeds", room.getNumberOfBeds())
@@ -41,6 +47,7 @@ public class RoomManagerImpl implements RoomManager {
 
         Number id = insertRoom.executeAndReturnKey(parameters);
         room.setId(id.longValue());
+        logger.debug("Room successfully created");
     }
 
     @Override
@@ -78,7 +85,7 @@ public class RoomManagerImpl implements RoomManager {
         }
 
         try {
-            return jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
+                return jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
