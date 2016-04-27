@@ -1,5 +1,6 @@
 package cz.fi.muni.pv168;
 
+import java.util.ArrayList;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.util.List;
 import org.slf4j.Logger;
+import org.springframework.dao.DataAccessException;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -39,6 +41,8 @@ public class GuestManagerImpl implements GuestManager {
 
         Number id = insertGuest.executeAndReturnKey(parameters);
         guest.setId(id.longValue());
+        
+        logDebug("guest(id: " + id.longValue() + ") created");
     }
 
     @Override
@@ -48,7 +52,15 @@ public class GuestManagerImpl implements GuestManager {
         if (guest.getId() == null) {
             throw new IllegalArgumentException("guest id is null");
         }
-        jdbc.update("UPDATE guest set fullName=? WHERE id=?", guest.getFullName(), guest.getId());
+        
+        try {
+            jdbc.update("UPDATE guest set fullName=? WHERE id=?", guest.getFullName(), guest.getId());
+        } catch(DataAccessException e) {
+            log.error("updateGuest()", e);
+            throw new ServiceFailureException("Problem with updating guest", e);
+        }
+        
+        logDebug("guest(id:" + guest.getId() + ") updated");
     }
 
     @Override
@@ -61,9 +73,12 @@ public class GuestManagerImpl implements GuestManager {
 
         try {
             jdbc.update("DELETE FROM GUEST WHERE ID = ? ", guest.getId());
-        } catch(EmptyResultDataAccessException ex) {
-            throw new ServiceFailureException("Guest does not exist");
+        } catch(DataAccessException ex) {
+            log.error("deleteGuest()", ex);
+            throw new ServiceFailureException("Problem with deleting guest", ex);
         }
+        
+        logDebug("guest(id:" + guest.getId() + ") deleted");
     }
 
     @Override
@@ -73,16 +88,23 @@ public class GuestManagerImpl implements GuestManager {
         }
 
         try {
+            logDebug("guest(id:" + id + ") returned");
             return jdbc.queryForObject("SELECT * FROM guest WHERE id=?", RowMappers.guestMapper, id);
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (DataAccessException ex) {
+            logDebug("guest(id:" + id + ") wasnt found");
             return null;
         }
-
     }
 
     @Override
     public List<Guest> getAllGuests() {
-        return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
+        try {
+            logDebug("all guests returned");
+            return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
+        } catch(DataAccessException e) {
+            logDebug("no guests found");
+            return new ArrayList<>();
+        }
     }
 
     private void validate(Guest guest) {
@@ -91,6 +113,12 @@ public class GuestManagerImpl implements GuestManager {
         }
         if (guest.getFullName() == null || guest.getFullName().equals("")) {
             throw new IllegalArgumentException("guest fullName is unset");
+        }
+    }
+    
+    private void logDebug(String message) {
+        if (log.isDebugEnabled()) {
+            log.debug(message);
         }
     }
 }
