@@ -5,9 +5,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
+import org.slf4j.Logger;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -15,7 +17,9 @@ import java.util.List;
 public class GuestManagerImpl implements GuestManager {
     private JdbcTemplate jdbc;
     static private String GUEST_NULL = "guest is null";
-
+    
+    final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
+    
     public GuestManagerImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }

@@ -65,10 +65,15 @@
             <version>SNAPSHOT</version>
         </dependency>
         <dependency>
-	<groupId>org.swinglabs.swingx</groupId>
-	<artifactId>swingx-core</artifactId>
-	<version>1.6.4</version>
-</dependency>
+            <groupId>org.swinglabs.swingx</groupId>
+            <artifactId>swingx-core</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+    <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-api</artifactId>
+	<version>1.7.21</version>
+    </dependency>
 
     </dependencies>
 
