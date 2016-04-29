@@ -1,8 +1,6 @@
 package cz.fi.muni.pv168;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,21 +8,26 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 
 /**
  * Created by Milan on 15.03.2016.
  */
 public class HotelManagerImpl implements HotelManager {
 
-    private GuestManager guestManager = null;
-    private RoomManager roomManager = null;
-    private JdbcTemplate jdbc;
+    private GuestManager guestManager;
+    private RoomManager roomManager;
+    private final JdbcTemplate jdbc;
 
+    public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
+    
     public HotelManagerImpl(DataSource dataSource, GuestManager guestManager, RoomManager roomManager) {
+        this.guestManager = null;
+        this.roomManager = null;
         this.jdbc = new JdbcTemplate(dataSource);
         this.guestManager = guestManager;
         this.roomManager = roomManager;
@@ -37,17 +40,16 @@ public class HotelManagerImpl implements HotelManager {
         }
 
         List<Guest> guests = new ArrayList<>();
-
-        //it fails when there is no accommodation in database
+        
         try {
             List<Accommodation> accommodations = jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", new RowMappers(roomManager, guestManager).accommodationMapper, room.getId());
+            
             for (Accommodation acc : accommodations) {
                 guests.add(acc.getGuest());
             }
-        } catch (Exception e) {
-
-        }
-
+        } catch (DataAccessException e) {}
+        
+        logDebug("returned all guests from room(id:" + room.getId() + ")");
         return guests;
     }
 
@@ -67,6 +69,7 @@ public class HotelManagerImpl implements HotelManager {
             }
         }
 
+        logDebug("returned all rooms from floor " + floor);
         return floorRooms;
     }
 
@@ -96,6 +99,8 @@ public class HotelManagerImpl implements HotelManager {
                 .addValue("guest", guest.getId());
 
         insertAccommodation.execute(parameters);
+        
+        logDebug("Accommodated " + guest.getFullName() + " to room(id:" + room.getId() + ")");
     }
 
     @Override
@@ -104,17 +109,23 @@ public class HotelManagerImpl implements HotelManager {
             throw new IllegalArgumentException("guest is null");
         }
 
-        Accommodation accommodation = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE GUEST=?", new RowMappers(roomManager, guestManager).accommodationMapper, guest.getId());
-
-        if (accommodation == null) {
+        Accommodation accommodation;
+        
+        try {
+            accommodation = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE GUEST=?", new RowMappers(roomManager, guestManager).accommodationMapper, guest.getId());
+        } catch(DataAccessException e) {
+            log.error("cancelAccommodation()", e);
             throw new ServiceFailureException("guest have no accommodation");
         }
 
         try {
             jdbc.update("DELETE FROM ACCOMMODATION WHERE ID = ? ", accommodation.getId());
-        } catch(EmptyResultDataAccessException ex) {
+        } catch(DataAccessException e) {
+            log.error("cancelAccommodation()", e);
             throw new ServiceFailureException("Accommodation does not exist");
         }
+        
+        logDebug("Canceled accommodation of guest(id:" + guest.getId() + ")");
     }
 
     @Override
@@ -128,6 +139,7 @@ public class HotelManagerImpl implements HotelManager {
             }
         }
 
+        logDebug("returned all available rooms");
         return availableRooms;
     }
 
@@ -138,11 +150,19 @@ public class HotelManagerImpl implements HotelManager {
         }
 
         List<Guest> guests = findGuests(room);
-
-        return guests.size() < room.getNumberOfBeds();
+        boolean result = guests.size() < room.getNumberOfBeds();
+        
+        logDebug("room(id:" + room.getId() + ") is available: " + result);
+        return result;
     }
 
     private static Timestamp toTimestamp(LocalDate localDate) {
         return Timestamp.valueOf(localDate.atStartOfDay());
+    }
+    
+    private void logDebug(String message) {
+        if (log.isDebugEnabled()) {
+            log.debug(message);
+        }
     }
 }

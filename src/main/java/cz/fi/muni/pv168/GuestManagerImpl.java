@@ -1,7 +1,6 @@
 package cz.fi.muni.pv168;
 
 import java.util.ArrayList;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -17,8 +16,8 @@ import org.springframework.dao.DataAccessException;
  * Created by Milan on 15.03.2016.
  */
 public class GuestManagerImpl implements GuestManager {
-    private JdbcTemplate jdbc;
-    static private String GUEST_NULL = "guest is null";
+    private final JdbcTemplate jdbc;
+    private static final String GUEST_NULL = "guest is null";
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
     
