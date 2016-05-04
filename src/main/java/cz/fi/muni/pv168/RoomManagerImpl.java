@@ -18,23 +18,20 @@ import java.util.List;
  */
 public class RoomManagerImpl implements RoomManager {
 
-    private final JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
 
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
     
-    private static RoomManager instance = null;
+    private static final RoomManager instance = new RoomManagerImpl();
     
     public static RoomManager getInstance() { 
         return instance;
     }
     
-    public static void init(DataSource dataSource) {
-        instance = new RoomManagerImpl(dataSource);
-    }
-    
-    public RoomManagerImpl(DataSource dataSource) { 
-        
-        this.jdbc = new JdbcTemplate(dataSource);
+    private RoomManagerImpl() { 
+        try {
+            this.jdbc = new JdbcTemplate(HotelDataSource.getInstance());
+        } catch(Exception e) {}
     }
 
     @Override

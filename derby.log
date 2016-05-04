@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Fri Apr 29 12:32:56 CEST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0154-6194-1b03-00000494a468 
-on database directory memory:C:\Users\Radac\Desktop\PV168\hw02\Project_Hotel\roommanager-test with class loader sun.misc.Launcher$AppClassLoader@75b84c92 
+Wed May 04 12:39:50 CEST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0154-7b5a-35a8-00000435fdf0 
+on database directory C:\Users\Radac\Desktop\PV168\hw02\Project_Hotel\hotelDB with class loader sun.misc.Launcher$AppClassLoader@75b84c92 
 Loaded from file:/C:/Users/Radac/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_60-b27

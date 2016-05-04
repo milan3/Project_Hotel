@@ -21,26 +21,26 @@ public class HotelManagerImpl implements HotelManager {
 
     private GuestManager guestManager;
     private RoomManager roomManager;
-    private final JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
     
     public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
     
-    private static HotelManager instance = null;
+    private static final HotelManager instance = new HotelManagerImpl();
     
     public static HotelManager getInstance() { 
         return instance;
     }
-    
-    public static void init(DataSource dataSource, GuestManager guestManager, RoomManager roomManager) {
-        instance = new HotelManagerImpl(dataSource, guestManager, roomManager);
-    }
-    
-    public HotelManagerImpl(DataSource dataSource, GuestManager guestManager, RoomManager roomManager) {
+   
+    public HotelManagerImpl() {
         this.guestManager = null;
         this.roomManager = null;
-        this.jdbc = new JdbcTemplate(dataSource);
-        this.guestManager = guestManager;
-        this.roomManager = roomManager;
+        
+        try {
+            this.jdbc = new JdbcTemplate(HotelDataSource.getInstance());
+        } catch(Exception e) {}
+        
+        this.guestManager = GuestManagerImpl.getInstance();
+        this.roomManager = RoomManagerImpl.getInstance();
     }
 
     @Override

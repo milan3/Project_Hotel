@@ -24,50 +24,17 @@ public class HotelManagerImplTest {
     private HotelManager hotelManager;
     private GuestManager guestManager;
     private RoomManager roomManager;
-    private DataSource dataSource;
 
     @Before
     public void setUp() throws  SQLException{
-        dataSource = prepareDataSource();
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("CREATE TABLE GUEST ("
-                    + "id bigint primary key generated always as identity,"
-                    + "fullName VARCHAR(255))").executeUpdate();
-
-            connection.prepareStatement("CREATE TABLE ROOM ("
-                    + "id bigint primary key generated always as identity,"
-                    + "number integer,"
-                    + "numberOfBeds integer,"
-                    + "balcony boolean,"
-                    + "price decimal)").executeUpdate();
-
-            connection.prepareStatement("CREATE TABLE ACCOMMODATION ("
-                    + "id bigint primary key generated always as identity,"
-                    + "arrival timestamp,"
-                    + "departure timestamp,"
-                    + "room bigint,"
-                    + "guest bigint)").executeUpdate();
-        }
-
-        guestManager = new GuestManagerImpl(dataSource);
-        roomManager = new RoomManagerImpl(dataSource);
-        hotelManager = new HotelManagerImpl(dataSource, guestManager, roomManager);
-    }
-
-    private static DataSource prepareDataSource() throws SQLException {
-        EmbeddedDataSource ds = new EmbeddedDataSource();
-        ds.setDatabaseName("memory:roommanager-test");
-        ds.setCreateDatabase("create");
-        return ds;
+        guestManager = GuestManagerImpl.getInstance();
+        roomManager = RoomManagerImpl.getInstance();
+        hotelManager = HotelManagerImpl.getInstance();
     }
 
     @After
     public void tearDown() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("DROP TABLE GUEST").executeUpdate();
-            connection.prepareStatement("DROP TABLE ACCOMMODATION").executeUpdate();
-            connection.prepareStatement("DROP TABLE ROOM").executeUpdate();
-        }
+        HotelDataSource.destroy();
     }
 
     @Test

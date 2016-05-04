@@ -5,6 +5,13 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import cz.fi.muni.pv168.GuestManagerImpl;
+import cz.fi.muni.pv168.HotelDataSource;
+import cz.fi.muni.pv168.HotelManagerImpl;
+import cz.fi.muni.pv168.RoomManagerImpl;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.JComponent;
@@ -19,12 +26,15 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public HlavneOknoAplikacie() {
+    public HlavneOknoAplikacie() throws SQLException {
         initComponents();
         /*ResourceBundle rs = ResourceBundle.getBundle("language");
         
         jTabbedPane1.addTab(rs.getString("rooms"), new RoomWindow().getContentPane());
         jTabbedPane1.addTab(rs.getString("guests"), new GuestWindow().getContentPane());*/
+        
+        jTabbedPane1.addTab("rooms", new RoomWindow().getContentPane());
+        jTabbedPane1.addTab("guests", new GuestWindow().getContentPane());    
     }
 
     /**
@@ -59,7 +69,7 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]){
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -87,7 +97,11 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new HlavneOknoAplikacie().setVisible(true);
+                try {
+                    new HlavneOknoAplikacie().setVisible(true);
+                } catch(SQLException e) {
+                    
+                }
 
             }
         });

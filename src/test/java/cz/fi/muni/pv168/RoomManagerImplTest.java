@@ -21,34 +21,15 @@ import static org.junit.Assert.*;
 public class RoomManagerImplTest {
 
     private RoomManager manager;
-    private DataSource dataSource;
 
     @Before
     public void setUp() throws SQLException {
-        dataSource = prepareDataSource();
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("CREATE TABLE ROOM ("
-                    + "id bigint primary key generated always as identity,"
-                    + "number int,"
-                    + "numberOfBeds int,"
-                    + "balcony boolean,"
-                    + "price decimal)").executeUpdate();
-        }
-        manager = new RoomManagerImpl(dataSource);
-    }
-
-    private static DataSource prepareDataSource() throws SQLException {
-        EmbeddedDataSource ds = new EmbeddedDataSource();
-        ds.setDatabaseName("memory:roommanager-test");
-        ds.setCreateDatabase("create");
-        return ds;
+        manager = RoomManagerImpl.getInstance();
     }
 
     @After
     public void tearDown() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("DROP TABLE ROOM").executeUpdate();
-        }
+        HotelDataSource.destroy();
     }
 
     @Test

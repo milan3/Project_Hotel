@@ -1,5 +1,6 @@
 package cz.fi.muni.pv168;
 
+import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -16,23 +17,22 @@ import java.util.List;
  * Created by Milan on 15.03.2016.
  */
 public class GuestManagerImpl implements GuestManager {
-    private final JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
     private static final String GUEST_NULL = "guest is null";
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
     
-    private static GuestManager instance = null;
+    private static final GuestManager instance = new GuestManagerImpl();
     
     public static GuestManager getInstance() { 
         return instance;
     }
     
-    public static void init(DataSource dataSource) {
-        instance = new GuestManagerImpl(dataSource);
-    }
-    
-    public GuestManagerImpl(DataSource dataSource) {
-        this.jdbc = new JdbcTemplate(dataSource);
+    private GuestManagerImpl() {
+        try {
+            this.jdbc = new JdbcTemplate(HotelDataSource.getInstance());
+        } catch(Exception e) {
+        }
     }
 
     @Override

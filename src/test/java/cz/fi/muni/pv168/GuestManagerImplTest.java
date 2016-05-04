@@ -19,31 +19,15 @@ import static org.junit.Assert.*;
 
 public class GuestManagerImplTest {
     private GuestManager manager;
-    private DataSource dataSource;
 
     @Before
     public void setUp()  throws SQLException {
-        dataSource = prepareDataSource();
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("CREATE TABLE GUEST ("
-                    + "id bigint primary key generated always as identity,"
-                    + "fullName VARCHAR(255))").executeUpdate();
-        }
-        manager = new GuestManagerImpl(dataSource);
-    }
-
-    private static DataSource prepareDataSource() throws SQLException {
-        EmbeddedDataSource ds = new EmbeddedDataSource();
-        ds.setDatabaseName("memory:roommanager-test");
-        ds.setCreateDatabase("create");
-        return ds;
+        manager = GuestManagerImpl.getInstance();
     }
 
     @After
     public void tearDown() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.prepareStatement("DROP TABLE GUEST").executeUpdate();
-        }
+        HotelDataSource.destroy();
     }
 
     @Test
