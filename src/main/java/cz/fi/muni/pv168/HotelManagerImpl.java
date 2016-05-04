@@ -22,8 +22,18 @@ public class HotelManagerImpl implements HotelManager {
     private GuestManager guestManager;
     private RoomManager roomManager;
     private final JdbcTemplate jdbc;
-
+    
     public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
+    
+    private static HotelManager instance = null;
+    
+    public static HotelManager getInstance() { 
+        return instance;
+    }
+    
+    public static void init(DataSource dataSource, GuestManager guestManager, RoomManager roomManager) {
+        instance = new HotelManagerImpl(dataSource, guestManager, roomManager);
+    }
     
     public HotelManagerImpl(DataSource dataSource, GuestManager guestManager, RoomManager roomManager) {
         this.guestManager = null;

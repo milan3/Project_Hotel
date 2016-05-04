@@ -22,6 +22,16 @@ public class RoomManagerImpl implements RoomManager {
 
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
     
+    private static RoomManager instance = null;
+    
+    public static RoomManager getInstance() { 
+        return instance;
+    }
+    
+    public static void init(DataSource dataSource) {
+        instance = new RoomManagerImpl(dataSource);
+    }
+    
     public RoomManagerImpl(DataSource dataSource) { 
         
         this.jdbc = new JdbcTemplate(dataSource);

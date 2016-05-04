@@ -5,6 +5,9 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import cz.fi.muni.pv168.Room;
+import cz.fi.muni.pv168.RoomsTableModel;
+import java.math.BigDecimal;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
@@ -13,12 +16,13 @@ import javax.swing.JFrame;
  * @author Radoslav Karlik (422358)
  */
 public class RoomWindow extends javax.swing.JFrame {
-
+    RoomsTableModel model;
     /**
      * Creates new form RoomWindow
      */
     public RoomWindow() {
         initComponents();
+        model = (RoomsTableModel) roomsTable.getModel();
     }
 
     /**
@@ -32,7 +36,7 @@ public class RoomWindow extends javax.swing.JFrame {
 
         buttonGroup8 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        roomsTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -45,28 +49,16 @@ public class RoomWindow extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Number", "Beds", "Price", "Balcony", "Status"
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        });
+
+        roomsTable.setModel(new RoomsTableModel());
+        jScrollPane1.setViewportView(roomsTable);
 
         jLabel1.setText("Filter");
 
@@ -89,7 +81,7 @@ public class RoomWindow extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButton3.setText("remove room");
+        jButton3.setText("remove");
 
         jButton4.setText("add");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -104,44 +96,6 @@ public class RoomWindow extends javax.swing.JFrame {
                 jButton5ActionPerformed(evt);
             }
         });
-
-        jMenu1.setText("File");
-
-        jMenuItem1.setText("Exit");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem1);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Guests");
-
-        jMenuItem2.setText("Manage guests");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem2);
-
-        jMenuBar1.add(jMenu2);
-
-        jMenu3.setText("Rooms");
-
-        jMenuItem3.setText("Manage rooms");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem3);
-
-        jMenuBar1.add(jMenu3);
-
-        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -217,20 +171,6 @@ public class RoomWindow extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        JFrame w = new GuestWindow();
-        w.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         final JDialog w = new RoomDialog(this, true);
         w.setVisible(true);
@@ -240,6 +180,16 @@ public class RoomWindow extends javax.swing.JFrame {
         final JDialog w = new RoomDialog(this, true);
         w.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        Room room = new Room();
+        room.setBalcony(false);
+        room.setId(5L);
+        room.setNumber(555);
+        room.setNumberOfBeds(100);
+        room.setPrice(BigDecimal.ZERO);
+        model.addRoom(room);
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -292,15 +242,8 @@ public class RoomWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JTable roomsTable;
     // End of variables declaration//GEN-END:variables
 }

@@ -21,6 +21,16 @@ public class GuestManagerImpl implements GuestManager {
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
     
+    private static GuestManager instance = null;
+    
+    public static GuestManager getInstance() { 
+        return instance;
+    }
+    
+    public static void init(DataSource dataSource) {
+        instance = new GuestManagerImpl(dataSource);
+    }
+    
     public GuestManagerImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
