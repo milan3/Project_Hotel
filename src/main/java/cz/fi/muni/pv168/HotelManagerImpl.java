@@ -38,7 +38,7 @@ public class HotelManagerImpl implements HotelManager {
     public HotelManagerImpl() {
         this.guestManager = null;
         this.roomManager = null;
-        this.jdbc = HotelJdbc.getInstance();
+        this.jdbc = HotelJdbc.getJdbc();
         this.guestManager = GuestManagerImpl.getInstance();
         this.roomManager = RoomManagerImpl.getInstance();
     }

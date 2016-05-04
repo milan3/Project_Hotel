@@ -5,6 +5,7 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import cz.fi.muni.pv168.Guest;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import cz.fi.muni.pv168.GuestManagerImpl;
 import cz.fi.muni.pv168.HotelJdbc;
@@ -16,6 +17,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  *
@@ -32,8 +35,7 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
         
         jTabbedPane1.addTab(rs.getString("rooms"), new RoomWindow().getContentPane());
         jTabbedPane1.addTab(rs.getString("guests"), new GuestWindow().getContentPane());*/
-        
-        HotelJdbc.init();
+                
         jTabbedPane1.addTab("rooms", new RoomWindow().getContentPane());
         jTabbedPane1.addTab("guests", new GuestWindow().getContentPane());    
     }
@@ -95,6 +97,8 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
+        HotelJdbc.init();
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

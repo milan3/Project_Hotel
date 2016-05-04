@@ -5,12 +5,18 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import cz.fi.muni.pv168.Room;
+import cz.fi.muni.pv168.RoomManager;
+import cz.fi.muni.pv168.RoomManagerImpl;
+import java.math.BigDecimal;
+
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class RoomDialog extends javax.swing.JDialog {
-
+    private Room room;
+    
     /**
      * Creates new form RoomDialog
      */
@@ -32,10 +38,10 @@ public class RoomDialog extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        lblNumber = new javax.swing.JTextField();
+        lblBeds = new javax.swing.JTextField();
+        lblPrice = new javax.swing.JTextField();
+        chkBoxBalcony = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -49,9 +55,14 @@ public class RoomDialog extends javax.swing.JDialog {
         jLabel5.setText("Balcony:");
         jLabel5.setToolTipText("");
 
-        jCheckBox1.setText("Has balcony");
+        chkBoxBalcony.setText("Has balcony");
 
         jButton1.setText("submit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -66,19 +77,19 @@ public class RoomDialog extends javax.swing.JDialog {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel2)
                                     .addGap(18, 18, 18)
-                                    .addComponent(jTextField1))
+                                    .addComponent(lblNumber))
                                 .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel4)
                                         .addComponent(jLabel3))
                                     .addGap(35, 35, 35)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jTextField2)
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(lblBeds)
+                                        .addComponent(lblPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
-                                .addComponent(jCheckBox1))))
+                                .addComponent(chkBoxBalcony))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(67, 67, 67)
                         .addComponent(jButton1)))
@@ -90,19 +101,19 @@ public class RoomDialog extends javax.swing.JDialog {
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblBeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jCheckBox1))
+                    .addComponent(chkBoxBalcony))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
                 .addContainerGap(33, Short.MAX_VALUE))
@@ -110,6 +121,23 @@ public class RoomDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        room.setBalcony(chkBoxBalcony.isSelected());
+        room.setNumber(Integer.valueOf(lblNumber.getText()));
+        room.setNumberOfBeds(Integer.valueOf(lblBeds.getText()));
+        room.setPrice(BigDecimal.valueOf(Double.valueOf(lblPrice.getText())));
+        
+        RoomManager rm = RoomManagerImpl.getInstance();
+        
+        if (room.getId() == null) {        
+            rm.createRoom(room);
+        } else {
+            rm.updateRoom(room);
+        }
+        
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -153,15 +181,26 @@ public class RoomDialog extends javax.swing.JDialog {
         });
     }
 
+    public void setRoom(Room room) {
+        this.room = room;
+        
+        if (room.getId() != null) {
+            chkBoxBalcony.setSelected(room.hasBalcony());
+            lblNumber.setText(String.valueOf(room.getNumber()));
+            lblBeds.setText(String.valueOf(room.getNumberOfBeds()));
+            lblPrice.setText(String.valueOf(room.getPrice()));
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkBoxBalcony;
     private javax.swing.JButton jButton1;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField lblBeds;
+    private javax.swing.JTextField lblNumber;
+    private javax.swing.JTextField lblPrice;
     // End of variables declaration//GEN-END:variables
 }

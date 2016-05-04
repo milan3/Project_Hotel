@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Milan on 15.03.2016.
  */
 public class GuestManagerImpl implements GuestManager {
-    private JdbcTemplate jdbc;
+    private final JdbcTemplate jdbc;
     private static final String GUEST_NULL = "guest is null";
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
@@ -33,7 +33,7 @@ public class GuestManagerImpl implements GuestManager {
     }
     
     private GuestManagerImpl() {
-        this.jdbc = HotelJdbc.getInstance();
+        this.jdbc = HotelJdbc.getJdbc();
     }
 
     @Override
@@ -135,9 +135,9 @@ public class GuestManagerImpl implements GuestManager {
         }
     }
     
-                private void logDebug(String message) {
-                    if (log.isDebugEnabled()) {
-                        log.debug(message);
-                    }
-                }
+    private void logDebug(String message) {
+        if (log.isDebugEnabled()) {
+            log.debug(message);
+        }
+    }
 }

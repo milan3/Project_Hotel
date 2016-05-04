@@ -5,7 +5,9 @@
  */
 package cz.fi.muni.pv168;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -65,7 +67,64 @@ public class RoomsTableModel extends AbstractTableModel{
         }
     }
     
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return Integer.class;
+            case 1:
+                return String.class;
+            case 2:
+                return BigDecimal.class;
+            case 3:
+                return Boolean.class;
+            case 4:
+                return Boolean.class;
+            default:
+                throw new IllegalArgumentException("columnIndex");
+        }
+    }
+    
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                return false;
+            default:
+                throw new IllegalArgumentException("columnIndex");
+        }
+    }
+    
     public void addRoom(Room room) {
         rooms.add(room);
+        int lastRow = rooms.size() - 1;
+        fireTableRowsInserted(lastRow, lastRow);
+    }
+    
+    public void addAll(Collection<Room> rooms) {
+        for (Room room : rooms) {
+            addRoom(room);
+        }
+    }
+    
+    public Room getRoomAt(int rowIndex) {
+        return rooms.get(rowIndex);
+    }
+    
+    public void setRoomAt(int rowIndex, Room room) {
+        rooms.set(rowIndex, room);
+        
+        for (int i = 0; i < getColumnCount(); i++)
+            fireTableCellUpdated(rowIndex, i);
+    }
+    
+    public void deleteRoom(int rowIndex, Room room) {
+        rooms.remove(room);
+        
+        fireTableRowsDeleted(rowIndex, rowIndex);
     }
 }

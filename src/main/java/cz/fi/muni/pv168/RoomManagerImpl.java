@@ -33,7 +33,7 @@ public class RoomManagerImpl implements RoomManager {
     }
     
     private RoomManagerImpl() { 
-        this.jdbc = HotelJdbc.getInstance();
+        this.jdbc = HotelJdbc.getJdbc();
     }
 
     @Override
@@ -125,7 +125,7 @@ public class RoomManagerImpl implements RoomManager {
             logDebug("no rooms found");
             return new ArrayList<>();
         }
-        logDebug("all rooms returned");
+        logDebug("all rooms returned (" + result.size() + ")");
         return result;
 
     }
