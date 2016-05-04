@@ -47,6 +47,11 @@ public class Guest {
     }
 
     @Override
+    public String toString() {
+        return "Guest(" + fullName + ")";
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hashCode(id);
     }
