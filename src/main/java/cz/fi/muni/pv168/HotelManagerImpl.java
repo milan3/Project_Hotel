@@ -1,5 +1,8 @@
 package cz.fi.muni.pv168;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -10,9 +13,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -45,6 +45,8 @@ public class HotelManagerImpl implements HotelManager {
 
     @Override
     public List<Guest> findGuests(Room room) {
+        logDebug("finding guests in room: " + room);
+
         if (room == null) {
             throw new IllegalArgumentException("room is null");
         }
@@ -57,14 +59,18 @@ public class HotelManagerImpl implements HotelManager {
             for (Accommodation acc : accommodations) {
                 guests.add(acc.getGuest());
             }
-        } catch (DataAccessException e) {}
+        } catch (DataAccessException e) {
+            logDebug("finding all guests from room " + room + " failed");
+        }
         
-        logDebug("returned all guests from room(id:" + room.getId() + ")");
+        logDebug("returned all guests from room " + room);
         return guests;
     }
 
     @Override
     public List<Room> getRooms(int floor) {
+        logDebug("finding all rooms on floor: " + floor);
+
         if (floor < 1) {
             throw new IllegalArgumentException("floor is not positive number");
         }
@@ -85,6 +91,7 @@ public class HotelManagerImpl implements HotelManager {
 
     @Override
     public void accommodateGuest(Room room, Guest guest, LocalDate arrival, LocalDate departure) {
+        logDebug("accomodating guest " + guest + " to room " + room);
         if (room == null) {
             throw new IllegalArgumentException("room is null");
         }
@@ -110,11 +117,12 @@ public class HotelManagerImpl implements HotelManager {
 
         insertAccommodation.execute(parameters);
         
-        logDebug("Accommodated " + guest.getFullName() + " to room(id:" + room.getId() + ")");
+        logDebug("Accommodated guest: " + guest + " to room: " + room);
     }
 
     @Override
     public void cancelAccommodation(Guest guest) {
+        logDebug("cancelling accommodation to guest " + guest);
         if (guest == null) {
             throw new IllegalArgumentException("guest is null");
         }
@@ -129,17 +137,18 @@ public class HotelManagerImpl implements HotelManager {
         }
 
         try {
-            jdbc.update("DELETE FROM ACCOMMODATION WHERE ID = ? ", accommodation.getId());
+                jdbc.update("DELETE FROM ACCOMMODATION WHERE ID = ? ", accommodation.getId());
         } catch(DataAccessException e) {
             log.error("cancelAccommodation()", e);
             throw new ServiceFailureException("Accommodation does not exist");
         }
         
-        logDebug("Canceled accommodation of guest(id:" + guest.getId() + ")");
+        logDebug("Canceled accommodation of guest" + guest);
     }
 
     @Override
     public List<Room> getAvailableRooms() {
+        logDebug("getting all available rooms");
         List<Room> allRooms = roomManager.getAllRooms();
         List<Room> availableRooms = new ArrayList<>();
 

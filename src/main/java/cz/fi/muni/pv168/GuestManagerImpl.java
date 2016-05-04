@@ -1,16 +1,16 @@
 package cz.fi.muni.pv168;
 
-import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.springframework.dao.DataAccessException;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -37,6 +37,7 @@ public class GuestManagerImpl implements GuestManager {
 
     @Override
     public void createGuest(Guest guest) {
+        logDebug("creating guest: " + guest);
         validate(guest);
 
         if (guest.getId() != null) {
@@ -51,11 +52,12 @@ public class GuestManagerImpl implements GuestManager {
         Number id = insertGuest.executeAndReturnKey(parameters);
         guest.setId(id.longValue());
         
-        logDebug("guest(id: " + id.longValue() + ") created");
+        logDebug("guest: " + guest + "created");
     }
 
     @Override
     public void updateGuest(Guest guest) {
+        logDebug("updating guest: " + guest);
         validate(guest);
 
         if (guest.getId() == null) {
@@ -69,11 +71,12 @@ public class GuestManagerImpl implements GuestManager {
             throw new ServiceFailureException("Problem with updating guest", e);
         }
         
-        logDebug("guest(id:" + guest.getId() + ") updated");
+        logDebug("guest: " + guest + "updated");
     }
 
     @Override
     public void deleteGuest(Guest guest) {
+        logDebug("deleting guest: " + guest);
         validate(guest);
 
         if (guest.getId() == null) {
@@ -86,34 +89,41 @@ public class GuestManagerImpl implements GuestManager {
             log.error("deleteGuest()", ex);
             throw new ServiceFailureException("Problem with deleting guest", ex);
         }
-        
-        logDebug("guest(id:" + guest.getId() + ") deleted");
+
+        logDebug("guest: " + guest + "deleted");
     }
 
     @Override
     public Guest getGuest(Long id) {
+        logDebug("finding guest with id: " + id);
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
-
+        Guest result = null;
         try {
-            logDebug("guest(id:" + id + ") returned");
-            return jdbc.queryForObject("SELECT * FROM guest WHERE id=?", RowMappers.guestMapper, id);
+            result = jdbc.queryForObject("SELECT * FROM guest WHERE id=?", RowMappers.guestMapper, id);
+            //return jdbc.queryForObject("SELECT * FROM guest WHERE id=?", RowMappers.guestMapper, id);
         } catch (DataAccessException ex) {
-            logDebug("guest(id:" + id + ") wasnt found");
+            logDebug("guest with id: " + id + " wasn't found");
             return null;
         }
+        logDebug("guest with id: " + id + " found");
+        return result;
     }
 
     @Override
     public List<Guest> getAllGuests() {
+        logDebug("getting all guests");
+        List<Guest> result;
         try {
-            logDebug("all guests returned");
-            return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
+            result = jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
+            //return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
         } catch(DataAccessException e) {
             logDebug("no guests found");
             return new ArrayList<>();
         }
+        logDebug("all guests returned");
+        return result;
     }
 
     private void validate(Guest guest) {
@@ -125,9 +135,9 @@ public class GuestManagerImpl implements GuestManager {
         }
     }
     
-    private void logDebug(String message) {
-        if (log.isDebugEnabled()) {
-            log.debug(message);
-        }
-    }
+                private void logDebug(String message) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(message);
+                    }
+                }
 }

@@ -1,5 +1,6 @@
 package cz.fi.muni.pv168;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public class RoomManagerImpl implements RoomManager {
 
     private final JdbcTemplate jdbc;
 
-    final static Logger logger = LoggerFactory.getLogger(RoomManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
     
     private static RoomManager instance = null;
     
@@ -37,7 +39,7 @@ public class RoomManagerImpl implements RoomManager {
 
     @Override
     public void createRoom(Room room) {
-        logger.debug("Creating Room: "+room);
+        logDebug("creating room: " + room);
         validate(room);
         
         if (room.getId() != null) {
@@ -57,11 +59,12 @@ public class RoomManagerImpl implements RoomManager {
 
         Number id = insertRoom.executeAndReturnKey(parameters);
         room.setId(id.longValue());
-        logger.debug("Room successfully created");
+        logDebug("room: " + room + " created");
     }
 
     @Override
     public void updateRoom(Room room) throws ServiceFailureException {
+        logDebug("updating room: " + room);
         validate(room);
 
         if (room.getId() == null) {
@@ -71,10 +74,12 @@ public class RoomManagerImpl implements RoomManager {
             throw new ServiceFailureException("room with the same number already exists");
         }
         jdbc.update("UPDATE room set number=?, numberOfBeds = ?, balcony = ?, price = ? WHERE id=?", room.getNumber(), room.getNumberOfBeds(), room.hasBalcony(), room.getPrice(), room.getId());
+        logDebug("room: " + room + " updated");
     }
 
     @Override
     public void deleteRoom(Room room) throws RuntimeException {
+        logDebug("deleting room: " + room);
         validate(room);
 
         if (room.getId() == null) {
@@ -84,26 +89,46 @@ public class RoomManagerImpl implements RoomManager {
         try {
             jdbc.update("DELETE FROM ROOM WHERE ID = ? ", room.getId());
         } catch(EmptyResultDataAccessException ex) {
+            log.error("deleteRoom()", ex);
             throw new ServiceFailureException("Room does not exist");
         }
+        logDebug("room: " + room + "deleted");
     }
 
     @Override
     public Room getRoom(Long id) {
+        logDebug("finding room with id: " + id);
         if (id == null) {
             throw new IllegalArgumentException("id is null");
         }
 
+        Room result = null;
+
         try {
-                return jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
+            result = jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
+            //return jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
         } catch (EmptyResultDataAccessException ex) {
+            logDebug("room with id: " + id + " wasn't found");
             return null;
         }
+        logDebug("room with id: " + id + " found");
+        return result;
     }
 
     @Override
     public List<Room> getAllRooms() {
-        return jdbc.query("SELECT * FROM room", RowMappers.roomMapper);
+        logDebug("getting all rooms");
+        List<Room> result;
+        try {
+            result = jdbc.query("SELECT * FROM room", RowMappers.roomMapper);
+            //return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
+        } catch(DataAccessException e) {
+            logDebug("no rooms found");
+            return new ArrayList<>();
+        }
+        logDebug("all rooms returned");
+        return result;
+
     }
 
     private void validate(Room room) {
@@ -130,5 +155,11 @@ public class RoomManagerImpl implements RoomManager {
         }
 
         return false;
+    }
+
+    private void logDebug(String message) {
+        if (log.isDebugEnabled()) {
+            log.debug(message);
+        }
     }
 }
