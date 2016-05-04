@@ -20,16 +20,16 @@ import static org.junit.Assert.*;
  */
 public class RoomManagerImplTest {
 
-    private RoomManager manager;
+    private RoomManager manager = RoomManagerImpl.getInstance();
 
     @Before
-    public void setUp() throws SQLException {
-        manager = RoomManagerImpl.getInstance();
+    public void setUp() throws  SQLException{
+        HotelJdbc.init();
     }
 
     @After
     public void tearDown() throws SQLException {
-        HotelDataSource.destroy();
+        HotelJdbc.destroy();
     }
 
     @Test

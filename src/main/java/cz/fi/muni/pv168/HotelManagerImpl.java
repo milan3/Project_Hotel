@@ -25,20 +25,20 @@ public class HotelManagerImpl implements HotelManager {
     
     public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
     
-    private static final HotelManager instance = new HotelManagerImpl();
+    private static HotelManager instance = null;
     
     public static HotelManager getInstance() { 
+        if (instance == null) {
+            instance = new HotelManagerImpl();
+        }
+        
         return instance;
     }
    
     public HotelManagerImpl() {
         this.guestManager = null;
         this.roomManager = null;
-        
-        try {
-            this.jdbc = new JdbcTemplate(HotelDataSource.getInstance());
-        } catch(Exception e) {}
-        
+        this.jdbc = HotelJdbc.getInstance();
         this.guestManager = GuestManagerImpl.getInstance();
         this.roomManager = RoomManagerImpl.getInstance();
     }
@@ -54,7 +54,7 @@ public class HotelManagerImpl implements HotelManager {
         List<Guest> guests = new ArrayList<>();
         
         try {
-            List<Accommodation> accommodations = jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", new RowMappers(roomManager, guestManager).accommodationMapper, room.getId());
+            List<Accommodation> accommodations = jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", RowMappers.accommodationMapper, room.getId());
             
             for (Accommodation acc : accommodations) {
                 guests.add(acc.getGuest());
@@ -130,7 +130,7 @@ public class HotelManagerImpl implements HotelManager {
         Accommodation accommodation;
         
         try {
-            accommodation = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE GUEST=?", new RowMappers(roomManager, guestManager).accommodationMapper, guest.getId());
+            accommodation = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE GUEST=?", RowMappers.accommodationMapper, guest.getId());
         } catch(DataAccessException e) {
             log.error("cancelAccommodation()", e);
             throw new ServiceFailureException("guest have no accommodation");

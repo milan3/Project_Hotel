@@ -22,16 +22,18 @@ public class RoomManagerImpl implements RoomManager {
 
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
     
-    private static final RoomManager instance = new RoomManagerImpl();
+    private static RoomManager instance = null;
     
     public static RoomManager getInstance() { 
+        if (instance == null) {
+            instance = new RoomManagerImpl(); 
+        }
+        
         return instance;
     }
     
     private RoomManagerImpl() { 
-        try {
-            this.jdbc = new JdbcTemplate(HotelDataSource.getInstance());
-        } catch(Exception e) {}
+        this.jdbc = HotelJdbc.getInstance();
     }
 
     @Override

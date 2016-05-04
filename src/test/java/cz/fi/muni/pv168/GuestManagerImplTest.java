@@ -18,16 +18,16 @@ import static org.junit.Assert.*;
  */
 
 public class GuestManagerImplTest {
-    private GuestManager manager;
+    private GuestManager manager = GuestManagerImpl.getInstance();
 
     @Before
-    public void setUp()  throws SQLException {
-        manager = GuestManagerImpl.getInstance();
+    public void setUp() {
+        HotelJdbc.init();
     }
-
+    
     @After
     public void tearDown() throws SQLException {
-        HotelDataSource.destroy();
+        HotelJdbc.destroy();
     }
 
     @Test

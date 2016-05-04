@@ -22,17 +22,18 @@ public class GuestManagerImpl implements GuestManager {
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
     
-    private static final GuestManager instance = new GuestManagerImpl();
+    private static GuestManager instance = null;
     
     public static GuestManager getInstance() { 
+        if (instance == null) {
+            instance = new GuestManagerImpl();
+        }
+        
         return instance;
     }
     
     private GuestManagerImpl() {
-        try {
-            this.jdbc = new JdbcTemplate(HotelDataSource.getInstance());
-        } catch(Exception e) {
-        }
+        this.jdbc = HotelJdbc.getInstance();
     }
 
     @Override
@@ -43,15 +44,14 @@ public class GuestManagerImpl implements GuestManager {
         if (guest.getId() != null) {
             throw new IllegalArgumentException("guest id is already set");
         }
-
-        SimpleJdbcInsert insertGuest = new SimpleJdbcInsert(jdbc).withTableName("guest").usingGeneratedKeyColumns("id");
+        SimpleJdbcInsert insertGuest = new SimpleJdbcInsert(jdbc).withTableName("GUEST").usingGeneratedKeyColumns("id");
 
         SqlParameterSource parameters = new MapSqlParameterSource()
                                                 .addValue("fullName", guest.getFullName());
-
+        
         Number id = insertGuest.executeAndReturnKey(parameters);
         guest.setId(id.longValue());
-        
+          
         logDebug("guest: " + guest + "created");
     }
 

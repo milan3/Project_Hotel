@@ -7,7 +7,7 @@ package cz.fi.muni.pv168.windows;
 
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import cz.fi.muni.pv168.GuestManagerImpl;
-import cz.fi.muni.pv168.HotelDataSource;
+import cz.fi.muni.pv168.HotelJdbc;
 import cz.fi.muni.pv168.HotelManagerImpl;
 import cz.fi.muni.pv168.RoomManagerImpl;
 import java.sql.Connection;
@@ -33,6 +33,7 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
         jTabbedPane1.addTab(rs.getString("rooms"), new RoomWindow().getContentPane());
         jTabbedPane1.addTab(rs.getString("guests"), new GuestWindow().getContentPane());*/
         
+        HotelJdbc.init();
         jTabbedPane1.addTab("rooms", new RoomWindow().getContentPane());
         jTabbedPane1.addTab("guests", new GuestWindow().getContentPane());    
     }

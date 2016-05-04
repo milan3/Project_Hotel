@@ -21,20 +21,18 @@ import static org.junit.Assert.*;
  * Created by Milan on 15.03.2016.
  */
 public class HotelManagerImplTest {
-    private HotelManager hotelManager;
-    private GuestManager guestManager;
-    private RoomManager roomManager;
+    private HotelManager hotelManager = HotelManagerImpl.getInstance();;
+    private GuestManager guestManager = GuestManagerImpl.getInstance();
+    private RoomManager roomManager = RoomManagerImpl.getInstance();;
 
     @Before
     public void setUp() throws  SQLException{
-        guestManager = GuestManagerImpl.getInstance();
-        roomManager = RoomManagerImpl.getInstance();
-        hotelManager = HotelManagerImpl.getInstance();
+        HotelJdbc.init();
     }
 
     @After
     public void tearDown() throws SQLException {
-        HotelDataSource.destroy();
+        HotelJdbc.destroy();
     }
 
     @Test

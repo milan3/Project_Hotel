@@ -6,13 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
  * Created by Radac on 27.3.2016.
  */
 public class RowMappers {
-    private RoomManager roomManager;
-    private GuestManager guestManager;
-
-    public RowMappers(RoomManager roomManager, GuestManager guestManager) {
-        this.roomManager = roomManager;
-        this.guestManager = guestManager;
-    }
+    private static RoomManager roomManager = RoomManagerImpl.getInstance();
+    private static GuestManager guestManager = GuestManagerImpl.getInstance();
 
     public static RowMapper<Guest> guestMapper = (rs, rowNum) ->  {
         Guest guest = new Guest();
@@ -22,7 +17,7 @@ public class RowMappers {
         return guest;
     };
 
-    public RowMapper<Accommodation> accommodationMapper = (rs, rowNum) ->  {
+    public static RowMapper<Accommodation> accommodationMapper = (rs, rowNum) ->  {
         Accommodation accommodation = new Accommodation();
         accommodation.setId(rs.getLong("id"));
         accommodation.setArrival(rs.getTimestamp("arrival").toLocalDateTime().toLocalDate());
