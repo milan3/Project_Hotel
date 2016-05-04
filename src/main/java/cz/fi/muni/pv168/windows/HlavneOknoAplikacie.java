@@ -5,6 +5,8 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -13,14 +15,16 @@ import javax.swing.JPanel;
  * @author Radoslav Karlik (422358)
  */
 public class HlavneOknoAplikacie extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form NewJFrame
      */
     public HlavneOknoAplikacie() {
         initComponents();
-        jTabbedPane1.addTab("Rooms", new RoomWindow().getContentPane());
-        jTabbedPane1.addTab("Guests", new GuestWindow().getContentPane());
+        /*ResourceBundle rs = ResourceBundle.getBundle("language");
+        
+        jTabbedPane1.addTab(rs.getString("rooms"), new RoomWindow().getContentPane());
+        jTabbedPane1.addTab(rs.getString("guests"), new GuestWindow().getContentPane());*/
     }
 
     /**

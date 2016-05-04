@@ -84,7 +84,7 @@ public class GuestWindow extends javax.swing.JFrame {
         jLabel5.setText("Room");
         jLabel5.setToolTipText("");
 
-        jButton2.setText("remove guest");
+        jButton2.setText("remove");
 
         jButton3.setText("add");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
