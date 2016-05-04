@@ -5,9 +5,6 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
 /**
  *
  * @author Radoslav Karlik (422358)
@@ -84,6 +81,7 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new HlavneOknoAplikacie().setVisible(true);
+
             }
         });
     }
