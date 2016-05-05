@@ -14,6 +14,7 @@ import cz.fi.muni.pv168.HotelManagerImpl;
 import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
+import java.awt.Color;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -42,6 +43,8 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         for (Room room : rooms) {
             comboBoxRooms.addItem(room.getNumber());
         }
+        
+        lblAvailable.setOpaque(true);
     }
 
     /**
@@ -60,6 +63,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         comboBoxRooms = new javax.swing.JComboBox();
         jButton3 = new javax.swing.JButton();
+        lblAvailable = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -102,7 +106,9 @@ public class AccommodationsDialog extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboBoxRooms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(comboBoxRooms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(91, 91, 91)
+                                .addComponent(lblAvailable))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(118, 118, 118)
@@ -118,7 +124,8 @@ public class AccommodationsDialog extends javax.swing.JDialog {
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(comboBoxRooms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboBoxRooms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAvailable))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -150,6 +157,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
             model.addAccommodation(acc);
         }
         
+        updateAvailableLabel(room);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void comboBoxRoomsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxRoomsActionPerformed
@@ -158,10 +166,12 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_comboBoxRoomsActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Room room = rm.getRoom(Integer.valueOf(String.valueOf(comboBoxRooms.getSelectedItem())));
         int selectedRow = tableAccommodations.getSelectedRow();
         Accommodation acc = model.getAccommodationAt(tableAccommodations.convertRowIndexToModel(selectedRow));
         hm.cancelAccommodation(acc.getGuest());
         model.deleteAccommodation(selectedRow, acc);
+        updateAvailableLabel(room);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -215,6 +225,17 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         
         model.clear();
         model.addAll(hm.findAccommodations(room));
+        updateAvailableLabel(room);
+    }
+    
+    private void updateAvailableLabel(Room room) {
+        if (hm.isAvailable(room)) {
+            lblAvailable.setText("Available");
+            lblAvailable.setBackground(java.awt.Color.GREEN);
+        } else {
+            lblAvailable.setText("Unavailable");
+            lblAvailable.setBackground(java.awt.Color.RED);
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -224,6 +245,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblAvailable;
     private javax.swing.JTable tableAccommodations;
     // End of variables declaration//GEN-END:variables
 }
