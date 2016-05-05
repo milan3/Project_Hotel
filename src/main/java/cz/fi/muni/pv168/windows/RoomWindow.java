@@ -11,6 +11,9 @@ import cz.fi.muni.pv168.RoomManagerImpl;
 import cz.fi.muni.pv168.RoomsTableModel;
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
@@ -20,13 +23,14 @@ import javax.swing.SwingWorker;
  * @author Radoslav Karlik (422358)
  */
 public class RoomWindow extends javax.swing.JFrame {
-   
+    private final RoomManager rm = RoomManagerImpl.getInstance();
+    private final RoomsTableModel model;
     /**
      * Creates new form RoomWindow
      */
     public RoomWindow() {
         initComponents();
-        RoomsTableModel model = (RoomsTableModel) roomsTable.getModel();
+        model = (RoomsTableModel) roomsTable.getModel();
         
         SwingWorker sw = new SwingWorker<Void,Void>(){
             @Override
@@ -38,6 +42,15 @@ public class RoomWindow extends javax.swing.JFrame {
         };
         
         sw.execute();
+        try {
+            sw.get();
+            
+            selectFirstRow();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RoomWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(RoomWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }   
     }
 
     /**
@@ -186,29 +199,34 @@ public class RoomWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JFrame w = new AccommodationsWindow();
-        w.setVisible(true);
-        this.setVisible(false);
+        final AccommodationsDialog aw = new AccommodationsDialog(this, true);
+        int selectedRow = roomsTable.getSelectedRow();
+        Room room = model.getRoomAt(roomsTable.convertRowIndexToModel(selectedRow));
+        aw.setRoom(room);
+        aw.setVisible(true);
+        model.fireTableCellUpdated(selectedRow, 1);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        Room room = new Room();        
         final RoomDialog w = new RoomDialog(this, true);
+        Room room = new Room(); 
         w.setRoom(room);
         w.setVisible(true);
-        RoomsTableModel model = (RoomsTableModel) roomsTable.getModel();
-        model.addRoom(room);
+        
+        if (room.getId() != null) {
+            model.addRoom(rm.getRoom(room.getNumber()));
+        }
+        
+        selectLastRow();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         final RoomDialog w = new RoomDialog(this, true);
-        RoomManager rm = RoomManagerImpl.getInstance();
-        RoomsTableModel model = (RoomsTableModel)roomsTable.getModel();
         int selectedRow = roomsTable.getSelectedRow();
         Room room = model.getRoomAt(roomsTable.convertRowIndexToModel(selectedRow));
         w.setRoom(room);
         w.setVisible(true);
-        model.setRoomAt(selectedRow, room);
+        model.setRoomAt(selectedRow, rm.getRoom(room.getNumber()));
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -216,12 +234,12 @@ public class RoomWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        RoomManager rm = RoomManagerImpl.getInstance();
-        RoomsTableModel model = (RoomsTableModel)roomsTable.getModel();
         int selectedRow = roomsTable.getSelectedRow();
         Room room = model.getRoomAt(roomsTable.convertRowIndexToModel(selectedRow));
         model.deleteRoom(selectedRow, room);
         rm.deleteRoom(room);
+        
+        selectRow(selectedRow);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -261,7 +279,23 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    private void selectRow(int index) {
+        if (roomsTable.getRowCount() > index) {
+            roomsTable.setRowSelectionInterval(index, index);
+        } else if (roomsTable.getRowCount() > 0){
+            selectLastRow();
+        }
+    }
+    
+    private void selectFirstRow() {
+        selectRow(0);
+    }
+    
+    private void selectLastRow() {
+        selectRow(roomsTable.getRowCount() - 1);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup8;
     private javax.swing.JButton jButton2;

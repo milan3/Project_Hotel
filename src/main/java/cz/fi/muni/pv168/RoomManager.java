@@ -9,6 +9,7 @@ public interface RoomManager {
     void createRoom(Room room);
     void updateRoom(Room room);
     void deleteRoom(Room room);
+    Room getRoom(int number);
     Room getRoom(Long id);
 
     List<Room> getAllRooms();

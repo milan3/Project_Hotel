@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -20,6 +21,10 @@ public class RoomManagerImpl implements RoomManager {
 
     private JdbcTemplate jdbc;
 
+    public static final String NEGATIVE_BEDS = "number of beds is negative";
+    public static final String NEGATIVE_NUMBER = "number of room is negative";
+    public static final String NEGATIVE_PRICE = "price is negative";
+    
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
     
     private static RoomManager instance = null;
@@ -105,7 +110,6 @@ public class RoomManagerImpl implements RoomManager {
 
         try {
             result = jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
-            //return jdbc.queryForObject("SELECT * FROM room WHERE id=?", RowMappers.roomMapper, id);
         } catch (EmptyResultDataAccessException ex) {
             logDebug("room with id: " + id + " wasn't found");
             return null;
@@ -113,14 +117,32 @@ public class RoomManagerImpl implements RoomManager {
         logDebug("room with id: " + id + " found");
         return result;
     }
+    
+    @Override
+    public Room getRoom(int number) {
+        logDebug("finding room with number: " + number);
+        if (number < 0) {
+            throw new IllegalArgumentException("number is negative");
+        }
 
+        Room result = null;
+
+        try {
+            result = jdbc.queryForObject("SELECT * FROM room WHERE number=?", RowMappers.roomMapper, number);
+        } catch (EmptyResultDataAccessException ex) {
+            logDebug("room with number: " + number + " wasn't found");
+            return null;
+        }
+        logDebug("room with number: " + number + " found");
+        return result;
+    }
+    
     @Override
     public List<Room> getAllRooms() {
         logDebug("getting all rooms");
         List<Room> result;
         try {
             result = jdbc.query("SELECT * FROM room", RowMappers.roomMapper);
-            //return jdbc.query("SELECT * FROM guest", RowMappers.guestMapper);
         } catch(DataAccessException e) {
             logDebug("no rooms found");
             return new ArrayList<>();
@@ -135,20 +157,20 @@ public class RoomManagerImpl implements RoomManager {
             throw new IllegalArgumentException("room is null");
         }
         if (room.getNumber() < 100) {
-            throw new IllegalArgumentException("number of room is negative");
+            throw new IllegalArgumentException(NEGATIVE_NUMBER);
         }
         if (room.getNumberOfBeds() < 0) {
-            throw new IllegalArgumentException("number of beds is negative");
+            throw new IllegalArgumentException(NEGATIVE_BEDS);
         }
         if (room.getPrice().doubleValue() < 0) {
-            throw new IllegalArgumentException("price is negative");
+            throw new IllegalArgumentException(NEGATIVE_PRICE);
         }
     }
 
-    private boolean roomNumberExists(Room room) {
+    private boolean roomNumberExists(Room room) {       
         for (Room other : getAllRooms()) {
             if (    room.getNumber() == other.getNumber() && ((room.getId() == null) ||
-                    (room.getId() != null && room.getId() != other.getId()))) {
+                    !room.getId().equals(other.getId()))) {
                 return true;
             }
         }

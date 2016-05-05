@@ -52,21 +52,25 @@ public class HotelManagerImpl implements HotelManager {
         }
 
         List<Guest> guests = new ArrayList<>();
-        
-        try {
-            List<Accommodation> accommodations = jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", RowMappers.accommodationMapper, room.getId());
+        List<Accommodation> accommodations = findAccommodations(room);
             
-            for (Accommodation acc : accommodations) {
-                guests.add(acc.getGuest());
-            }
-        } catch (DataAccessException e) {
-            logDebug("finding all guests from room " + room + " failed");
+        for (Accommodation acc : accommodations) {
+            guests.add(acc.getGuest());
         }
         
         logDebug("returned all guests from room " + room);
         return guests;
     }
-
+    //asi lepsie jak findGuests, zatial takto lebo sa zide
+    public List<Accommodation> findAccommodations(Room room) {
+        try {
+            return jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", RowMappers.accommodationMapper, room.getId());
+        } catch(DataAccessException e) {
+            logDebug("finding all accommodations from room " + room + " failed");
+            return new ArrayList<>();
+        }
+    }
+    
     @Override
     public List<Room> getRooms(int floor) {
         logDebug("finding all rooms on floor: " + floor);
@@ -90,7 +94,7 @@ public class HotelManagerImpl implements HotelManager {
     }
 
     @Override
-    public void accommodateGuest(Room room, Guest guest, LocalDate arrival, LocalDate departure) {
+    public Accommodation accommodateGuest(Room room, Guest guest, LocalDate arrival, LocalDate departure) {
         logDebug("accomodating guest " + guest + " to room " + room);
         if (room == null) {
             throw new IllegalArgumentException("room is null");
@@ -118,6 +122,8 @@ public class HotelManagerImpl implements HotelManager {
         insertAccommodation.execute(parameters);
         
         logDebug("Accommodated guest: " + guest + " to room: " + room);
+        
+        return jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE room=? AND guest=?", RowMappers.accommodationMapper, room.getId(), guest.getId());
     }
 
     @Override

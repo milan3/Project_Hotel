@@ -8,7 +8,9 @@ package cz.fi.muni.pv168.windows;
 import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
+import cz.fi.muni.pv168.ServiceFailureException;
 import java.math.BigDecimal;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -43,6 +45,7 @@ public class RoomDialog extends javax.swing.JDialog {
         lblPrice = new javax.swing.JTextField();
         chkBoxBalcony = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
+        lblError = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -63,6 +66,9 @@ public class RoomDialog extends javax.swing.JDialog {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        lblError.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        lblError.setForeground(new java.awt.Color(153, 0, 51));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,7 +95,8 @@ public class RoomDialog extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
-                                .addComponent(chkBoxBalcony))))
+                                .addComponent(chkBoxBalcony))
+                            .addComponent(lblError)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(67, 67, 67)
                         .addComponent(jButton1)))
@@ -116,27 +123,74 @@ public class RoomDialog extends javax.swing.JDialog {
                     .addComponent(chkBoxBalcony))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblError)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int oldNumber = room.getNumber();
+        
+        lblNumber.setBackground(java.awt.Color.white);
+        lblBeds.setBackground(java.awt.Color.white);
+        lblPrice.setBackground(java.awt.Color.white);
+        lblError.setText("");
+        
         room.setBalcony(chkBoxBalcony.isSelected());
-        room.setNumber(Integer.valueOf(lblNumber.getText()));
-        room.setNumberOfBeds(Integer.valueOf(lblBeds.getText()));
-        room.setPrice(BigDecimal.valueOf(Double.valueOf(lblPrice.getText())));
         
-        RoomManager rm = RoomManagerImpl.getInstance();
-        
-        if (room.getId() == null) {        
-            rm.createRoom(room);
-        } else {
-            rm.updateRoom(room);
+        try {
+            room.setNumber(Integer.valueOf(lblNumber.getText()));
+        } catch(Exception e) {
+            lblNumber.setBackground(java.awt.Color.red);
+            return;
         }
         
-        dispose();
+        try {
+            room.setNumberOfBeds(Integer.valueOf(lblBeds.getText()));
+        } catch(Exception e) {
+            lblBeds.setBackground(java.awt.Color.red);
+            return;
+        }
+        
+        try {
+            room.setPrice(BigDecimal.valueOf(Double.valueOf(lblPrice.getText())));
+        }
+        catch (Exception e) {
+            lblPrice.setBackground(java.awt.Color.red);
+            return;
+        }
+        
+        RoomManager rm = RoomManagerImpl.getInstance();
+
+        try {
+            if (room.getId() == null) {        
+                rm.createRoom(room);
+            } else {
+                rm.updateRoom(room);
+            }
+            
+             dispose();
+        } catch(ServiceFailureException e) {
+            lblNumber.setBackground(java.awt.Color.red);
+            lblError.setText("Room number already exists!");
+        } catch(IllegalArgumentException e) {
+            switch (e.getMessage()) {
+                case RoomManagerImpl.NEGATIVE_BEDS:
+                    lblBeds.setBackground(java.awt.Color.red);
+                    break;
+                case RoomManagerImpl.NEGATIVE_NUMBER:
+                    lblNumber.setBackground(java.awt.Color.red);
+                    break;
+                case RoomManagerImpl.NEGATIVE_PRICE:
+                    lblPrice.setBackground(java.awt.Color.red);
+                    break;
+                default:
+                    break;
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -200,6 +254,7 @@ public class RoomDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField lblBeds;
+    private javax.swing.JLabel lblError;
     private javax.swing.JTextField lblNumber;
     private javax.swing.JTextField lblPrice;
     // End of variables declaration//GEN-END:variables
