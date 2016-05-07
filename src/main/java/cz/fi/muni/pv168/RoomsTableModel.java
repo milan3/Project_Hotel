@@ -43,7 +43,7 @@ public class RoomsTableModel extends AbstractTableModel{
             case 3:
                 return room.hasBalcony();
             case 4: 
-                return hm.isAvailable(room);
+                return hm.isAvailable(room) ? "Available" : "Unavailable";
             default:
                 throw new IllegalArgumentException("columnIndex");
         }
@@ -79,7 +79,7 @@ public class RoomsTableModel extends AbstractTableModel{
             case 3:
                 return Boolean.class;
             case 4:
-                return Boolean.class;
+                return String.class;
             default:
                 throw new IllegalArgumentException("columnIndex");
         }

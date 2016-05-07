@@ -77,7 +77,7 @@ public class RoomDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGap(168, 168, 168)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(layout.createSequentialGroup()
@@ -96,16 +96,18 @@ public class RoomDialog extends javax.swing.JDialog {
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
                                 .addComponent(chkBoxBalcony))
-                            .addComponent(lblError)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addComponent(jButton1))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jButton1)))
-                .addContainerGap(26, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(lblError)))
+                .addContainerGap(200, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(lblNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -123,9 +125,9 @@ public class RoomDialog extends javax.swing.JDialog {
                     .addComponent(chkBoxBalcony))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
                 .addComponent(lblError)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(58, 58, 58))
         );
 
         pack();
@@ -174,8 +176,19 @@ public class RoomDialog extends javax.swing.JDialog {
             
              dispose();
         } catch(ServiceFailureException e) {
-            lblNumber.setBackground(java.awt.Color.red);
-            lblError.setText("Room number already exists!");
+            lblError.setText(e.getMessage());
+            
+            switch (e.getMessage()) {
+                case RoomManagerImpl.NUMBER_EXISTS:
+                    lblNumber.setBackground(java.awt.Color.red);
+                    return;
+                case RoomManagerImpl.WRONG_NUMBER_OF_BEDS:
+                    lblBeds.setBackground(java.awt.Color.red);
+                    return;
+                default:
+                    return;
+            }
+            
         } catch(IllegalArgumentException e) {
             switch (e.getMessage()) {
                 case RoomManagerImpl.NEGATIVE_BEDS:

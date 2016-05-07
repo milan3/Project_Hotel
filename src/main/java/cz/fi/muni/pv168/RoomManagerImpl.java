@@ -20,10 +20,12 @@ import java.util.Objects;
 public class RoomManagerImpl implements RoomManager {
 
     private JdbcTemplate jdbc;
-
+    //ERROR MESSAGES
     public static final String NEGATIVE_BEDS = "number of beds is negative";
     public static final String NEGATIVE_NUMBER = "number of room is negative";
     public static final String NEGATIVE_PRICE = "price is negative";
+    public static final String NUMBER_EXISTS = "room with the same number already exists";
+    public static final String WRONG_NUMBER_OF_BEDS = "room cant have less beds than accommodated guests";
     
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
     
@@ -50,7 +52,7 @@ public class RoomManagerImpl implements RoomManager {
             throw new IllegalArgumentException("room id is already set");
         }
         if (roomNumberExists(room)) {
-            throw new ServiceFailureException("room with the same number already exists");
+            throw new ServiceFailureException(NUMBER_EXISTS);
         }
         
         SimpleJdbcInsert insertRoom = new SimpleJdbcInsert(jdbc).withTableName("room").usingGeneratedKeyColumns("id");
@@ -75,7 +77,10 @@ public class RoomManagerImpl implements RoomManager {
             throw new IllegalArgumentException("room id is null");
         }
         if (roomNumberExists(room)) {
-            throw new ServiceFailureException("room with the same number already exists");
+            throw new ServiceFailureException(NUMBER_EXISTS);
+        }
+        if (room.getNumberOfBeds() < HotelManagerImpl.getInstance().findAccommodations(room).size()) {
+            throw new ServiceFailureException(WRONG_NUMBER_OF_BEDS);
         }
         jdbc.update("UPDATE room set number=?, numberOfBeds = ?, balcony = ?, price = ? WHERE id=?", room.getNumber(), room.getNumberOfBeds(), room.hasBalcony(), room.getPrice(), room.getId());
         logDebug("room: " + room + " updated");
