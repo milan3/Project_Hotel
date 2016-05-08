@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -31,6 +33,21 @@ public class RoomWindow extends javax.swing.JFrame {
     public RoomWindow() {
         initComponents();
         model = (RoomsTableModel) roomsTable.getModel();
+        
+        roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (roomsTable.getRowCount() > 0) {
+                    buttonManage.setEnabled(true);
+                    buttonEdit.setEnabled(true);
+                    buttonRemove.setEnabled(true);
+                } else {
+                    buttonManage.setEnabled(false);
+                    buttonEdit.setEnabled(false);
+                    buttonRemove.setEnabled(false);
+                }
+            }
+        });
         
         SwingWorker sw = new SwingWorker<Void,Void>(){
             @Override
@@ -72,11 +89,11 @@ public class RoomWindow extends javax.swing.JFrame {
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        buttonManage = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox();
-        jButton3 = new javax.swing.JButton();
+        buttonRemove = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        buttonEdit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -100,19 +117,21 @@ public class RoomWindow extends javax.swing.JFrame {
 
         jLabel8.setText("0 filtered rooms");
 
-        jButton2.setText("manage accommodations");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonManage.setText("manage accommodations");
+        buttonManage.setEnabled(false);
+        buttonManage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                buttonManageActionPerformed(evt);
             }
         });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButton3.setText("remove");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        buttonRemove.setText("remove");
+        buttonRemove.setEnabled(false);
+        buttonRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                buttonRemoveActionPerformed(evt);
             }
         });
 
@@ -123,10 +142,11 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setText("edit");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        buttonEdit.setText("edit");
+        buttonEdit.setEnabled(false);
+        buttonEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                buttonEditActionPerformed(evt);
             }
         });
 
@@ -156,13 +176,13 @@ public class RoomWindow extends javax.swing.JFrame {
                             .addComponent(jLabel8)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addComponent(jButton2)
+                        .addComponent(buttonManage)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
+                        .addComponent(buttonRemove)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)))
+                        .addComponent(buttonEdit)))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -188,25 +208,25 @@ public class RoomWindow extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
+                    .addComponent(buttonManage)
+                    .addComponent(buttonRemove)
                     .addComponent(jButton4)
-                    .addComponent(jButton5))
+                    .addComponent(buttonEdit))
                 .addGap(51, 51, 51))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void buttonManageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonManageActionPerformed
         final AccommodationsDialog aw = new AccommodationsDialog(this, true);
-        int selectedRow = roomsTable.getSelectedRow();
-        Room room = model.getRoomAt(roomsTable.convertRowIndexToModel(selectedRow));
+        int selectedRow = getSelectedRow();
+        Room room = getSelectedRoom();
         aw.setRoom(room);
         aw.setVisible(true);
         model.fireTableCellUpdated(selectedRow, 1);
         model.fireTableCellUpdated(selectedRow, 4);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_buttonManageActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         final RoomDialog w = new RoomDialog(this, true);
@@ -221,27 +241,27 @@ public class RoomWindow extends javax.swing.JFrame {
         selectLastRow();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void buttonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditActionPerformed
         final RoomDialog w = new RoomDialog(this, true);
-        int selectedRow = roomsTable.getSelectedRow();
-        Room room = model.getRoomAt(roomsTable.convertRowIndexToModel(selectedRow));
+        int selectedRow = getSelectedRow();
+        Room room = getSelectedRoom();
         w.setRoom(room);
         w.setVisible(true);
         model.setRoomAt(selectedRow, rm.getRoom(room.getNumber()));
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_buttonEditActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
     }//GEN-LAST:event_formWindowOpened
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int selectedRow = roomsTable.getSelectedRow();
-        Room room = model.getRoomAt(roomsTable.convertRowIndexToModel(selectedRow));
+    private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
+        int selectedRow = getSelectedRow();
+        Room room = getSelectedRoom();
         model.deleteRoom(selectedRow, room);
         rm.deleteRoom(room);
         
         selectRow(selectedRow);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_buttonRemoveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -297,12 +317,20 @@ public class RoomWindow extends javax.swing.JFrame {
         selectRow(roomsTable.getRowCount() - 1);
     }
     
+    private Room getSelectedRoom() {
+        return model.getRoomAt(roomsTable.convertRowIndexToModel(getSelectedRow()));
+    }
+    
+    private int getSelectedRow() {
+        return roomsTable.getSelectedRow();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonEdit;
     private javax.swing.ButtonGroup buttonGroup8;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton buttonManage;
+    private javax.swing.JButton buttonRemove;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JComboBox jComboBox1;
