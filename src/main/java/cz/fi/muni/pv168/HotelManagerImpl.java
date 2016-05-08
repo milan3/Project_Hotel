@@ -25,6 +25,8 @@ public class HotelManagerImpl implements HotelManager {
     
     public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
     
+    public static final String DEPARTURE_AFTER_ARRIVAL = "Departure must be after arrival";
+    
     private static HotelManager instance = null;
     
     public static HotelManager getInstance() { 
@@ -108,7 +110,7 @@ public class HotelManagerImpl implements HotelManager {
         }
 
         if (arrival.compareTo(departure) > 0) {
-            throw new ServiceFailureException("departure must be after arrival");
+            throw new ServiceFailureException(DEPARTURE_AFTER_ARRIVAL);
         }
 
         SimpleJdbcInsert insertAccommodation = new SimpleJdbcInsert(jdbc).withTableName("accommodation").usingGeneratedKeyColumns("id");

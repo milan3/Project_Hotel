@@ -83,7 +83,6 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         comboBoxRooms = new javax.swing.JComboBox();
         buttonChange = new javax.swing.JButton();
         lblAvailable = new javax.swing.JLabel();
-        chkBoxRandom = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -116,9 +115,6 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         buttonChange.setText("change accommodation");
         buttonChange.setEnabled(false);
 
-        chkBoxRandom.setSelected(true);
-        chkBoxRandom.setText("RANDOM");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -136,9 +132,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
                                 .addComponent(lblAvailable))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(chkBoxRandom)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(104, 104, 104)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(buttonRemove)
                             .addComponent(buttonAccommodate)
@@ -156,9 +150,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonAccommodate)
-                    .addComponent(chkBoxRandom))
+                .addComponent(buttonAccommodate)
                 .addGap(18, 18, 18)
                 .addComponent(buttonRemove)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
@@ -170,31 +162,22 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonAccommodateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAccommodateActionPerformed
-        if (!chkBoxRandom.isSelected()) {
-            final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true);
-            gaw.setRoom(getSelectedRoom());
-            gaw.setVisible(true);
-            Accommodation accommodation = gaw.getAccommodation();
+        Accommodation accommodation = null;
+        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
+        gaw.setRoom(getSelectedRoom());
+        gaw.setVisible(true);
+        accommodation = gaw.getAccommodation();
+            
+        if (accommodation != null) {
             model.addAccommodation(accommodation);
-            updateAvailableLabel(accommodation.getRoom());
             selectLastRow();
-        } else {
-            Room room = getSelectedRoom();
-
-            String[] names = new String[]{
-              "Jozo",
-              "Fero",
-              "Jano",
-              "Dusan"
-            };
-
-            if (hm.isAvailable(room)) {
-                Guest guest = new Guest(names[new Random().nextInt(names.length)] + new Random().nextInt(99999));
-                GuestManagerImpl.getInstance().createGuest(guest);
-                Accommodation acc = hm.accommodateGuest(room, guest, LocalDate.of(new Random().nextInt(2) + 2014, new Random().nextInt(12) + 1, new Random().nextInt(28) + 1), LocalDate.of(2016, new Random().nextInt(12) + 1, new Random().nextInt(28) + 1));
-                model.addAccommodation(acc);
-                updateAvailableLabel(room);
-                selectLastRow();
+            
+            boolean result = updateAvailableLabel(accommodation.getRoom());
+            
+            if (result) {
+                buttonAccommodate.setEnabled(true);
+            } else {
+                buttonAccommodate.setEnabled(false);
             }
         }
     }//GEN-LAST:event_buttonAccommodateActionPerformed
@@ -203,6 +186,14 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         Room room = getSelectedRoom();
         fillComboBox(room);
         selectFirstRow();
+        
+        boolean result = updateAvailableLabel(room);
+        
+        if (result) {
+            buttonAccommodate.setEnabled(true);
+        } else {
+            buttonAccommodate.setEnabled(false);
+        }
     }//GEN-LAST:event_comboBoxRoomsActionPerformed
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
@@ -211,8 +202,15 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         Accommodation acc = getSelectedAccommodation();
         hm.cancelAccommodation(acc.getGuest());
         model.deleteAccommodation(selectedRow, acc);
-        updateAvailableLabel(room);
         selectRow(selectedRow);
+        
+        boolean result = updateAvailableLabel(room);
+        
+        if (result) {
+            buttonAccommodate.setEnabled(true);
+        } else {
+            buttonAccommodate.setEnabled(false);
+        }
     }//GEN-LAST:event_buttonRemoveActionPerformed
 
     /**
@@ -266,16 +264,24 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         
         model.clear();
         model.addAll(hm.findAccommodations(room));
-        updateAvailableLabel(room);
+        boolean result = updateAvailableLabel(room);
+        
+        if (result) {
+            buttonAccommodate.setEnabled(true);
+        } else {
+            buttonAccommodate.setEnabled(false);
+        }
     }
     
-    private void updateAvailableLabel(Room room) {
+    private boolean updateAvailableLabel(Room room) {
         if (hm.isAvailable(room)) {
             lblAvailable.setText("Available");
             lblAvailable.setBackground(java.awt.Color.GREEN);
+            return true;
         } else {
             lblAvailable.setText("Unavailable");
             lblAvailable.setBackground(java.awt.Color.RED);
+            return false;
         }
     }
     
@@ -311,7 +317,6 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     private javax.swing.JButton buttonAccommodate;
     private javax.swing.JButton buttonChange;
     private javax.swing.JButton buttonRemove;
-    private javax.swing.JCheckBox chkBoxRandom;
     private javax.swing.JComboBox comboBoxRooms;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;

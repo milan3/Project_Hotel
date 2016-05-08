@@ -5,6 +5,8 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import cz.fi.muni.pv168.Guest;
+import cz.fi.muni.pv168.GuestManagerImpl;
 import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;

@@ -39,9 +39,7 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                      <Component id="chkBoxRandom" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="104" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="buttonRemove" min="-2" max="-2" attributes="0"/>
                           <Component id="buttonAccommodate" min="-2" max="-2" attributes="0"/>
@@ -65,10 +63,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="120" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="buttonAccommodate" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="chkBoxRandom" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="buttonAccommodate" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="buttonRemove" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="22" max="32767" attributes="0"/>
@@ -134,12 +129,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblAvailable">
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkBoxRandom">
-      <Properties>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="RANDOM"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>
