@@ -114,6 +114,11 @@ public class AccommodationsDialog extends javax.swing.JDialog {
 
         buttonChange.setText("change accommodation");
         buttonChange.setEnabled(false);
+        buttonChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonChangeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -212,6 +217,13 @@ public class AccommodationsDialog extends javax.swing.JDialog {
             buttonAccommodate.setEnabled(false);
         }
     }//GEN-LAST:event_buttonRemoveActionPerformed
+
+    private void buttonChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChangeActionPerformed
+        Accommodation accommodation = getSelectedAccommodation();
+        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
+        gaw.setVisible(true);
+        model.setAccommodationAt(getSelectedRow(), accommodation);
+    }//GEN-LAST:event_buttonChangeActionPerformed
 
     /**
      * @param args the command line arguments

@@ -111,4 +111,11 @@ public class AccommodationsTableModel extends AbstractTableModel{
         
         fireTableRowsDeleted(rowIndex, rowIndex);
     }
+    
+    public void setAccommodationAt(int rowIndex, Accommodation accommodation) {
+        accommodations.set(rowIndex, accommodation);
+        
+        for (int i = 0; i < getColumnCount(); i++)
+            fireTableCellUpdated(rowIndex, i);
+    }
 }

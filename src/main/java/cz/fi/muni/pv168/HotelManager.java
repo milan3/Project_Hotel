@@ -14,4 +14,5 @@ public interface HotelManager {
     void cancelAccommodation(Guest guest);
     List<Room> getAvailableRooms();
     boolean isAvailable(Room room);
+    void updateAccommodation(Accommodation accommodation);
 }

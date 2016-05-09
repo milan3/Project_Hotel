@@ -123,9 +123,18 @@ public class HotelManagerImpl implements HotelManager {
 
         insertAccommodation.execute(parameters);
         
+        Accommodation result = null;
+        
+        try {
+            result = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE room=? AND guest=?", RowMappers.accommodationMapper, room.getId(), guest.getId());
+        } catch(DataAccessException e) {
+            log.error("accommodateGuest()", e);
+            throw new ServiceFailureException("guest accommodation failed.");
+        }
+        
         logDebug("Accommodated guest: " + guest + " to room: " + room);
         
-        return jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE room=? AND guest=?", RowMappers.accommodationMapper, room.getId(), guest.getId());
+        return result;
     }
 
     @Override
@@ -183,6 +192,42 @@ public class HotelManagerImpl implements HotelManager {
         return result;
     }
 
+    @Override
+    public void updateAccommodation(Accommodation accommodation) {
+        logDebug("updating accommodation " + accommodation);
+        
+        if (accommodation == null) {
+            throw new IllegalArgumentException("accommodation is null");
+        }
+        if (accommodation.getRoom() == null) {
+            throw new IllegalArgumentException("room is null");
+        }
+        if (accommodation.getGuest() == null) {
+            throw new IllegalArgumentException("guest is null");
+        }
+
+        if (!isAvailable(accommodation.getRoom())) {
+            throw new ServiceFailureException("Room is not available");
+        }
+
+        if (accommodation.getArrival().compareTo(accommodation.getDeparture()) > 0) {
+            throw new ServiceFailureException(DEPARTURE_AFTER_ARRIVAL);
+        }
+        
+        if (accommodation.getId() == null) {
+            throw new IllegalArgumentException("accommodation id is null");
+        }
+        
+        try {
+            jdbc.update("UPDATE accommodation set arrival=?, departure=?, room=?, guest=? WHERE id=?", toTimestamp(accommodation.getArrival()), toTimestamp(accommodation.getDeparture()), accommodation.getRoom().getId(), accommodation.getGuest().getId(), accommodation.getId());
+        } catch(DataAccessException e) {
+            log.error("updateAccommodation()", e);
+            throw new ServiceFailureException("Problem with updating accommodation", e);
+        }
+        
+        logDebug("accommodation: " + accommodation + "updated");
+    }
+    
     private static Timestamp toTimestamp(LocalDate localDate) {
         return Timestamp.valueOf(localDate.atStartOfDay());
     }

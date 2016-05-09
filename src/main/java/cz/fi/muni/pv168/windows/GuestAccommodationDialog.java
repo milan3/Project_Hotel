@@ -36,6 +36,22 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         
         this.accommodation = accommodation;     
         
+        if (this.accommodation != null) {
+            room = accommodation.getRoom();
+            guest = accommodation.getGuest();
+            LocalDate from = accommodation.getArrival();
+            LocalDate to = accommodation.getDeparture();
+            
+            lblRoom.setText(String.valueOf(room.getNumber()));
+            lblPrice.setText(String.valueOf(room.getPrice()));
+            lblGuest.setText(String.valueOf(guest.getFullName()));
+            datePickerFrom.setDate(java.sql.Date.valueOf(from));
+            datePickerTo.setDate(java.sql.Date.valueOf(to));
+            buttonChange.setEnabled(false);
+            
+            buttonSubmit.setEnabled(true);
+        }
+        
         datePickerFrom.setOpaque(true);
         datePickerTo.setOpaque(true);
     }
@@ -53,7 +69,6 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         buttonSubmit = new javax.swing.JButton();
-        buttonRemove = new javax.swing.JButton();
         datePickerFrom = new org.jdesktop.swingx.JXDatePicker();
         datePickerTo = new org.jdesktop.swingx.JXDatePicker();
         buttonChange = new javax.swing.JButton();
@@ -79,9 +94,6 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                 buttonSubmitActionPerformed(evt);
             }
         });
-
-        buttonRemove.setText("remove accommodation");
-        buttonRemove.setEnabled(false);
 
         datePickerFrom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -113,12 +125,6 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 66, Short.MAX_VALUE)
-                .addComponent(buttonSubmit)
-                .addGap(37, 37, 37)
-                .addComponent(buttonRemove)
-                .addGap(57, 57, 57))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -136,8 +142,11 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                         .addComponent(lblGuest))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(lblError)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(lblError))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(151, 151, 151)
+                        .addComponent(buttonSubmit)))
+                .addContainerGap(178, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(129, 129, 129)
@@ -174,11 +183,9 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                     .addComponent(lblGuest))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
                 .addComponent(lblPrice)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonSubmit)
-                    .addComponent(buttonRemove))
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonSubmit)
+                .addGap(35, 35, 35)
                 .addComponent(lblError)
                 .addGap(21, 21, 21))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -211,17 +218,24 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
         try {
-            accommodation = HotelManagerImpl.getInstance().accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
+            if (accommodation == null) {
+                accommodation = HotelManagerImpl.getInstance().accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
+            } else {
+                accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
+                accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
+
+                HotelManagerImpl.getInstance().updateAccommodation(accommodation);
+            }
         } catch(ServiceFailureException e) {
             lblError.setText(e.getMessage());
-            
+
             switch (e.getMessage()) {
                 case HotelManagerImpl.DEPARTURE_AFTER_ARRIVAL:
                     datePickerFrom.setBackground(java.awt.Color.red);
                     datePickerTo.setBackground(java.awt.Color.red);
                     return;
                 default:
-                    return;
+                     return;
             }
         }
         
@@ -298,17 +312,14 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     
     private void checkEnabled() {
         if (guest != null && datePickerFrom.getDate() != null && datePickerTo.getDate() != null) {
-            buttonRemove.setEnabled(true);
             buttonSubmit.setEnabled(true);
         } else {
-            buttonRemove.setEnabled(false);
             buttonSubmit.setEnabled(false);
         }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonChange;
-    private javax.swing.JButton buttonRemove;
     private javax.swing.JButton buttonSubmit;
     private org.jdesktop.swingx.JXDatePicker datePickerFrom;
     private org.jdesktop.swingx.JXDatePicker datePickerTo;
