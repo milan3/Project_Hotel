@@ -56,20 +56,12 @@ public class RoomWindow extends javax.swing.JFrame {
             public Void doInBackground() throws Exception {
                 RoomManager rm = RoomManagerImpl.getInstance();      
                 model.addAll(rm.getAllRooms()); 
+                selectFirstRow();
                 return null;
             }
         };
         
         sw.execute();
-        try {
-            sw.get();
-            
-            selectFirstRow();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(RoomWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(RoomWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }   
     }
 
     /**
@@ -98,11 +90,6 @@ public class RoomWindow extends javax.swing.JFrame {
         buttonEdit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
-        });
 
         roomsTable.setModel(new RoomsTableModel());
         jScrollPane1.setViewportView(roomsTable);
@@ -251,10 +238,6 @@ public class RoomWindow extends javax.swing.JFrame {
         w.setVisible(true);
         model.setRoomAt(selectedRow, rm.getRoom(room.getNumber()));
     }//GEN-LAST:event_buttonEditActionPerformed
-
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-
-    }//GEN-LAST:event_formWindowOpened
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
         int selectedRow = getSelectedRow();

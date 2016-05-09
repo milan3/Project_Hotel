@@ -36,12 +36,6 @@ public class GuestDialog extends javax.swing.JDialog {
 
         addButton.setText("Submit");
 
-        nameTxtField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameTxtFieldActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText("Name:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -74,10 +68,6 @@ public class GuestDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void nameTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTxtFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameTxtFieldActionPerformed
 
     /**
      * @param args the command line arguments

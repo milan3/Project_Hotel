@@ -15,4 +15,5 @@ public interface HotelManager {
     List<Room> getAvailableRooms();
     boolean isAvailable(Room room);
     void updateAccommodation(Accommodation accommodation);
+    List<Guest> getGuestsWithoutAccommodation();
 }

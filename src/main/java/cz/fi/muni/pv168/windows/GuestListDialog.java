@@ -41,18 +41,15 @@ public class GuestListDialog extends javax.swing.JDialog {
             }
         });
         
-        GuestManager gm = GuestManagerImpl.getInstance();
-        List<Guest> guests = gm.getAllGuests();
+        
         listGuests.setCellRenderer(new GuestListRenderer());
         DefaultListModel model = new DefaultListModel();
         listGuests.setModel(model);
         HotelManager hm = HotelManagerImpl.getInstance();
-        List<Guest> accommodatedGuests = hm.findGuests(room);
+        List<Guest> guests = hm.getGuestsWithoutAccommodation();
         
         for (Guest guest : guests) {
-            if (!accommodatedGuests.contains(guest)) {
-                model.addElement(guest);
-            }
+            model.addElement(guest);
         }
     }
 

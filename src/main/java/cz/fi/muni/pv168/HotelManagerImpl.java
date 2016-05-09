@@ -228,6 +228,26 @@ public class HotelManagerImpl implements HotelManager {
         logDebug("accommodation: " + accommodation + "updated");
     }
     
+    @Override
+    public List<Guest> getGuestsWithoutAccommodation() {
+        List<Room> rooms = roomManager.getAllRooms();
+        List<Guest> allGuests = guestManager.getAllGuests();
+        List<Guest> accommodatedGuests = new ArrayList<>();
+        List<Guest> withoutAccommodation = new ArrayList<>();
+        
+        for (Room room : rooms) {
+            accommodatedGuests.addAll(findGuests(room));
+        }
+        
+        for (Guest guest : allGuests) {
+            if (!accommodatedGuests.contains(guest)) {
+                withoutAccommodation.add(guest);
+            }
+        }
+        
+        return withoutAccommodation;
+    }
+    
     private static Timestamp toTimestamp(LocalDate localDate) {
         return Timestamp.valueOf(localDate.atStartOfDay());
     }
