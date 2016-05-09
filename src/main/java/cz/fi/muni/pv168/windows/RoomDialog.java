@@ -41,11 +41,11 @@ public class RoomDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         lblNumber = new javax.swing.JTextField();
-        lblBeds = new javax.swing.JTextField();
         lblPrice = new javax.swing.JTextField();
         chkBoxBalcony = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         lblError = new javax.swing.JLabel();
+        comboBoxBeds = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -70,6 +70,8 @@ public class RoomDialog extends javax.swing.JDialog {
         lblError.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblError.setForeground(new java.awt.Color(153, 0, 51));
 
+        comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,8 +92,8 @@ public class RoomDialog extends javax.swing.JDialog {
                                         .addComponent(jLabel3))
                                     .addGap(35, 35, 35)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(lblBeds)
-                                        .addComponent(lblPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(lblPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                                        .addComponent(comboBoxBeds, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
@@ -114,7 +116,7 @@ public class RoomDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(lblBeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboBoxBeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -137,7 +139,7 @@ public class RoomDialog extends javax.swing.JDialog {
         int oldNumber = room.getNumber();
         
         lblNumber.setBackground(java.awt.Color.white);
-        lblBeds.setBackground(java.awt.Color.white);
+        comboBoxBeds.setBackground(java.awt.Color.white);
         lblPrice.setBackground(java.awt.Color.white);
         lblError.setText("");
         
@@ -150,12 +152,7 @@ public class RoomDialog extends javax.swing.JDialog {
             return;
         }
         
-        try {
-            room.setNumberOfBeds(Integer.valueOf(lblBeds.getText()));
-        } catch(Exception e) {
-            lblBeds.setBackground(java.awt.Color.red);
-            return;
-        }
+        room.setNumberOfBeds(comboBoxBeds.getSelectedIndex() + 1);
         
         try {
             room.setPrice(BigDecimal.valueOf(Double.valueOf(lblPrice.getText())));
@@ -183,7 +180,7 @@ public class RoomDialog extends javax.swing.JDialog {
                     lblNumber.setBackground(java.awt.Color.red);
                     return;
                 case RoomManagerImpl.WRONG_NUMBER_OF_BEDS:
-                    lblBeds.setBackground(java.awt.Color.red);
+                    comboBoxBeds.setBackground(java.awt.Color.red);
                     return;
                 default:
                     return;
@@ -191,9 +188,6 @@ public class RoomDialog extends javax.swing.JDialog {
             
         } catch(IllegalArgumentException e) {
             switch (e.getMessage()) {
-                case RoomManagerImpl.NEGATIVE_BEDS:
-                    lblBeds.setBackground(java.awt.Color.red);
-                    break;
                 case RoomManagerImpl.NEGATIVE_NUMBER:
                     lblNumber.setBackground(java.awt.Color.red);
                     break;
@@ -254,19 +248,19 @@ public class RoomDialog extends javax.swing.JDialog {
         if (room.getId() != null) {
             chkBoxBalcony.setSelected(room.hasBalcony());
             lblNumber.setText(String.valueOf(room.getNumber()));
-            lblBeds.setText(String.valueOf(room.getNumberOfBeds()));
+            comboBoxBeds.setSelectedIndex(room.getNumberOfBeds() - 1);
             lblPrice.setText(String.valueOf(room.getPrice()));
         }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chkBoxBalcony;
+    private javax.swing.JComboBox comboBoxBeds;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField lblBeds;
     private javax.swing.JLabel lblError;
     private javax.swing.JTextField lblNumber;
     private javax.swing.JTextField lblPrice;

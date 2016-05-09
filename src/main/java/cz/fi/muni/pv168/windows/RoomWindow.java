@@ -11,6 +11,7 @@ import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
 import cz.fi.muni.pv168.RoomsTableModel;
+import cz.fi.muni.pv168.TableRoomsFilter;
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -21,20 +22,23 @@ import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class RoomWindow extends javax.swing.JFrame {
-    private final RoomManager rm = RoomManagerImpl.getInstance();
+    private final RoomManager rm;
     private final RoomsTableModel model;
+    private TableRowSorter<RoomsTableModel> sorter;
     /**
      * Creates new form RoomWindow
      */
     public RoomWindow() {
         initComponents();
         model = (RoomsTableModel) roomsTable.getModel();
+        this.rm = RoomManagerImpl.getInstance();
         
         roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             @Override
@@ -51,11 +55,15 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
         
+        sorter = new TableRowSorter<RoomsTableModel>(model);
+        roomsTable.setRowSorter(sorter);   
+                
         SwingWorker sw = new SwingWorker<Void,Void>(){
             @Override
             public Void doInBackground() throws Exception {
                 RoomManager rm = RoomManagerImpl.getInstance();      
                 model.addAll(rm.getAllRooms()); 
+                lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
                 selectFirstRow();
                 return null;
             }
@@ -76,35 +84,57 @@ public class RoomWindow extends javax.swing.JFrame {
         buttonGroup8 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         roomsTable = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jLabel8 = new javax.swing.JLabel();
+        txtFieldNumber = new javax.swing.JTextField();
+        chkBoxAvailable = new javax.swing.JCheckBox();
+        chkBoxBalcony = new javax.swing.JCheckBox();
+        lblFilteredRooms = new javax.swing.JLabel();
         buttonManage = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
+        comboBoxBeds = new javax.swing.JComboBox();
         buttonRemove = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         buttonEdit = new javax.swing.JButton();
+        chkBoxFilter = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         roomsTable.setModel(new RoomsTableModel());
+        roomsTable.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                roomsTableComponentAdded(evt);
+            }
+            public void componentRemoved(java.awt.event.ContainerEvent evt) {
+                roomsTableComponentRemoved(evt);
+            }
+        });
         jScrollPane1.setViewportView(roomsTable);
-
-        jLabel1.setText("Filter");
 
         jLabel6.setText("Number");
 
         jLabel7.setText("Beds");
 
-        jCheckBox2.setText("Available");
+        txtFieldNumber.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFieldNumberKeyReleased(evt);
+            }
+        });
 
-        jCheckBox3.setText("Balcony");
+        chkBoxAvailable.setText("Available");
+        chkBoxAvailable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBoxAvailableActionPerformed(evt);
+            }
+        });
 
-        jLabel8.setText("0 filtered rooms");
+        chkBoxBalcony.setText("Balcony");
+        chkBoxBalcony.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBoxBalconyActionPerformed(evt);
+            }
+        });
+
+        lblFilteredRooms.setText("0 filtered rooms");
 
         buttonManage.setText("manage accommodations");
         buttonManage.setEnabled(false);
@@ -114,7 +144,7 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }));
 
         buttonRemove.setText("remove");
         buttonRemove.setEnabled(false);
@@ -139,6 +169,13 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
+        chkBoxFilter.setText("Use filter");
+        chkBoxFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBoxFilterActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,20 +186,20 @@ public class RoomWindow extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jCheckBox2)
+                            .addComponent(chkBoxAvailable)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel7))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField4)
-                                    .addComponent(jComboBox1, 0, 89, Short.MAX_VALUE)))
+                                    .addComponent(txtFieldNumber)
+                                    .addComponent(comboBoxBeds, 0, 89, Short.MAX_VALUE)))
+                            .addComponent(chkBoxBalcony)
+                            .addComponent(lblFilteredRooms)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(70, 70, 70)
-                                .addComponent(jLabel1))
-                            .addComponent(jCheckBox3)
-                            .addComponent(jLabel8)))
+                                .addGap(23, 23, 23)
+                                .addComponent(chkBoxFilter))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(buttonManage)
@@ -177,23 +214,23 @@ public class RoomWindow extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(jLabel1)
+                .addGap(5, 5, 5)
+                .addComponent(chkBoxFilter)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFieldNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboBoxBeds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox3)
+                .addComponent(chkBoxBalcony, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chkBoxAvailable)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblFilteredRooms)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -247,6 +284,30 @@ public class RoomWindow extends javax.swing.JFrame {
         
         selectRow(selectedRow);
     }//GEN-LAST:event_buttonRemoveActionPerformed
+
+    private void txtFieldNumberKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldNumberKeyReleased
+        updateSorter();
+    }//GEN-LAST:event_txtFieldNumberKeyReleased
+
+    private void chkBoxBalconyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxBalconyActionPerformed
+        updateSorter();
+    }//GEN-LAST:event_chkBoxBalconyActionPerformed
+
+    private void chkBoxAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxAvailableActionPerformed
+        updateSorter();
+    }//GEN-LAST:event_chkBoxAvailableActionPerformed
+
+    private void chkBoxFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxFilterActionPerformed
+        updateSorter();
+    }//GEN-LAST:event_chkBoxFilterActionPerformed
+
+    private void roomsTableComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_roomsTableComponentAdded
+        lblFilteredRooms.setText(String.valueOf(model.getRowCount()));
+    }//GEN-LAST:event_roomsTableComponentAdded
+
+    private void roomsTableComponentRemoved(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_roomsTableComponentRemoved
+        lblFilteredRooms.setText(String.valueOf(model.getRowCount()));
+    }//GEN-LAST:event_roomsTableComponentRemoved
 
     /**
      * @param args the command line arguments
@@ -310,21 +371,37 @@ public class RoomWindow extends javax.swing.JFrame {
         return roomsTable.getSelectedRow();
     }
     
+    private void updateSorter() {
+        if (chkBoxFilter.isSelected()) {
+            Integer number = !txtFieldNumber.getText().equals("") ? Integer.valueOf(txtFieldNumber.getText()) : null;
+            Integer beds = comboBoxBeds.getSelectedIndex() + 1;
+            boolean balcony = chkBoxBalcony.isSelected();
+            boolean available = chkBoxAvailable.isSelected();
+
+            sorter.setRowFilter(new TableRoomsFilter(number, beds, balcony, available));
+            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
+            selectFirstRow();
+        } else {
+            sorter.setRowFilter(null);
+            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
+        } 
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonEdit;
     private javax.swing.ButtonGroup buttonGroup8;
     private javax.swing.JButton buttonManage;
     private javax.swing.JButton buttonRemove;
+    private javax.swing.JCheckBox chkBoxAvailable;
+    private javax.swing.JCheckBox chkBoxBalcony;
+    private javax.swing.JCheckBox chkBoxFilter;
+    private javax.swing.JComboBox comboBoxBeds;
     private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JLabel lblFilteredRooms;
     private javax.swing.JTable roomsTable;
+    private javax.swing.JTextField txtFieldNumber;
     // End of variables declaration//GEN-END:variables
 }
