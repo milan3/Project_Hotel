@@ -55,11 +55,7 @@ public class RoomWindow extends javax.swing.JFrame {
             @Override
             public Void doInBackground() throws Exception {
                 RoomManager rm = RoomManagerImpl.getInstance();      
-                model.addAll(rm.getAllRooms());
-                GuestManagerImpl.getInstance().createGuest(new Guest("JOZO"+new Random().nextInt(99999)));
-                GuestManagerImpl.getInstance().createGuest(new Guest("JOZO"+new Random().nextInt(99999)));
-                GuestManagerImpl.getInstance().createGuest(new Guest("JOZO"+new Random().nextInt(99999)));
-                
+                model.addAll(rm.getAllRooms()); 
                 return null;
             }
         };
