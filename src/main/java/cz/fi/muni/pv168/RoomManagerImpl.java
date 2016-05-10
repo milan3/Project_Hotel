@@ -9,10 +9,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Milan on 15.03.2016.

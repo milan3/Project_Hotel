@@ -1,6 +1,5 @@
 package cz.fi.muni.pv168;
 
-import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -9,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 

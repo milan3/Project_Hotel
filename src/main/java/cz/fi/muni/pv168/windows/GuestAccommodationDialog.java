@@ -7,14 +7,13 @@ package cz.fi.muni.pv168.windows;
 
 import cz.fi.muni.pv168.Accommodation;
 import cz.fi.muni.pv168.Guest;
-import cz.fi.muni.pv168.GuestManagerImpl;
+import cz.fi.muni.pv168.HotelManager;
 import cz.fi.muni.pv168.HotelManagerImpl;
 import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.ServiceFailureException;
 import java.awt.Frame;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Random;
 import javax.swing.SwingUtilities;
 
 /**
@@ -217,14 +216,16 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_buttonChangeActionPerformed
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
+        HotelManager hm = HotelManagerImpl.getInstance();
+        
         try {
             if (accommodation == null) {
-                accommodation = HotelManagerImpl.getInstance().accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
+                accommodation = hm.accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
             } else {
                 accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
                 accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
 
-                HotelManagerImpl.getInstance().updateAccommodation(accommodation);
+                hm.updateAccommodation(accommodation);
             }
         } catch(ServiceFailureException e) {
             lblError.setText(e.getMessage());
@@ -235,10 +236,10 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                     datePickerTo.setBackground(java.awt.Color.red);
                     return;
                 default:
-                     return;
+                    return;
             }
         }
-        
+
         dispose();
     }//GEN-LAST:event_buttonSubmitActionPerformed
 

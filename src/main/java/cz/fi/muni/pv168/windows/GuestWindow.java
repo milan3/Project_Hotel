@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 

@@ -5,9 +5,7 @@
  */
 package cz.fi.muni.pv168;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

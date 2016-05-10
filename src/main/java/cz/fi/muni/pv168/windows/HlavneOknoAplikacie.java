@@ -5,20 +5,8 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import cz.fi.muni.pv168.Guest;
-import org.apache.derby.jdbc.EmbeddedDataSource;
-import cz.fi.muni.pv168.GuestManagerImpl;
 import cz.fi.muni.pv168.HotelJdbc;
-import cz.fi.muni.pv168.HotelManagerImpl;
-import cz.fi.muni.pv168.RoomManagerImpl;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
-import org.springframework.jdbc.core.RowMapper;
 
 /**
  *

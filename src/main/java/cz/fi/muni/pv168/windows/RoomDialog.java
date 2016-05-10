@@ -10,7 +10,7 @@ import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
 import cz.fi.muni.pv168.ServiceFailureException;
 import java.math.BigDecimal;
-import javafx.scene.paint.Color;
+import javax.swing.SwingWorker;
 
 /**
  *
@@ -164,40 +164,46 @@ public class RoomDialog extends javax.swing.JDialog {
         
         RoomManager rm = RoomManagerImpl.getInstance();
 
-        try {
-            if (room.getId() == null) {        
-                rm.createRoom(room);
-            } else {
-                rm.updateRoom(room);
-            }
+        new SwingWorker<Void, Void>() {
+            @Override
+            public Void doInBackground() throws Exception {
+                try {
+                    if (room.getId() == null) {        
+                        rm.createRoom(room);
+                    } else {
+                        rm.updateRoom(room);
+                    }
             
-             dispose();
-        } catch(ServiceFailureException e) {
-            lblError.setText(e.getMessage());
-            
-            switch (e.getMessage()) {
-                case RoomManagerImpl.NUMBER_EXISTS:
-                    lblNumber.setBackground(java.awt.Color.red);
-                    return;
-                case RoomManagerImpl.WRONG_NUMBER_OF_BEDS:
-                    comboBoxBeds.setBackground(java.awt.Color.red);
-                    return;
-                default:
-                    return;
+                     dispose();
+                } catch(ServiceFailureException e) {
+                    lblError.setText(e.getMessage());
+
+                    switch (e.getMessage()) {
+                        case RoomManagerImpl.NUMBER_EXISTS:
+                            lblNumber.setBackground(java.awt.Color.red);
+                            return null;
+                        case RoomManagerImpl.WRONG_NUMBER_OF_BEDS:
+                            comboBoxBeds.setBackground(java.awt.Color.red);
+                            return null;
+                        default:
+                            return null;
+                    }
+                } catch(IllegalArgumentException e) {
+                    switch (e.getMessage()) {
+                        case RoomManagerImpl.NEGATIVE_NUMBER:
+                            lblNumber.setBackground(java.awt.Color.red);
+                            break;
+                        case RoomManagerImpl.NEGATIVE_PRICE:
+                            lblPrice.setBackground(java.awt.Color.red);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                
+                return null;
             }
-            
-        } catch(IllegalArgumentException e) {
-            switch (e.getMessage()) {
-                case RoomManagerImpl.NEGATIVE_NUMBER:
-                    lblNumber.setBackground(java.awt.Color.red);
-                    break;
-                case RoomManagerImpl.NEGATIVE_PRICE:
-                    lblPrice.setBackground(java.awt.Color.red);
-                    break;
-                default:
-                    break;
-            }
-        }
+        }.execute();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

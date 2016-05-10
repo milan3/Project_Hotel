@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -204,10 +203,6 @@ public class HotelManagerImpl implements HotelManager {
         }
         if (accommodation.getGuest() == null) {
             throw new IllegalArgumentException("guest is null");
-        }
-
-        if (!isAvailable(accommodation.getRoom())) {
-            throw new ServiceFailureException("Room is not available");
         }
 
         if (accommodation.getArrival().compareTo(accommodation.getDeparture()) > 0) {

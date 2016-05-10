@@ -7,16 +7,12 @@ package cz.fi.muni.pv168.windows;
 
 import cz.fi.muni.pv168.Guest;
 import cz.fi.muni.pv168.GuestListRenderer;
-import cz.fi.muni.pv168.GuestManager;
-import cz.fi.muni.pv168.GuestManagerImpl;
 import cz.fi.muni.pv168.HotelManager;
 import cz.fi.muni.pv168.HotelManagerImpl;
 import cz.fi.muni.pv168.Room;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.ListModel;
-import javax.swing.WindowConstants;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -46,11 +42,19 @@ public class GuestListDialog extends javax.swing.JDialog {
         DefaultListModel model = new DefaultListModel();
         listGuests.setModel(model);
         HotelManager hm = HotelManagerImpl.getInstance();
-        List<Guest> guests = hm.getGuestsWithoutAccommodation();
         
-        for (Guest guest : guests) {
-            model.addElement(guest);
-        }
+        new SwingWorker<Void, Void>() {
+            @Override 
+            public Void doInBackground() throws Exception {
+                List<Guest> guests = hm.getGuestsWithoutAccommodation();
+        
+                for (Guest guest : guests) {
+                    model.addElement(guest);
+                }
+                
+                return null;
+            }
+        }.execute();
     }
 
     /**

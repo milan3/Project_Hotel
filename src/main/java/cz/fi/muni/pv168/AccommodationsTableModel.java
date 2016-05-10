@@ -5,7 +5,6 @@
  */
 package cz.fi.muni.pv168;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;

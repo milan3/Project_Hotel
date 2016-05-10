@@ -5,20 +5,11 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import cz.fi.muni.pv168.Guest;
-import cz.fi.muni.pv168.GuestManagerImpl;
 import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
 import cz.fi.muni.pv168.RoomsTableModel;
 import cz.fi.muni.pv168.TableRoomsFilter;
-import java.math.BigDecimal;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -38,7 +29,7 @@ public class RoomWindow extends javax.swing.JFrame {
     public RoomWindow() {
         initComponents();
         model = (RoomsTableModel) roomsTable.getModel();
-        this.rm = RoomManagerImpl.getInstance();
+        rm = RoomManagerImpl.getInstance();
         
         roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             @Override
@@ -58,7 +49,7 @@ public class RoomWindow extends javax.swing.JFrame {
         sorter = new TableRowSorter<RoomsTableModel>(model);
         roomsTable.setRowSorter(sorter);   
                 
-        SwingWorker sw = new SwingWorker<Void,Void>(){
+        new SwingWorker<Void,Void>(){
             @Override
             public Void doInBackground() throws Exception {
                 RoomManager rm = RoomManagerImpl.getInstance();      
@@ -67,9 +58,7 @@ public class RoomWindow extends javax.swing.JFrame {
                 selectFirstRow();
                 return null;
             }
-        };
-        
-        sw.execute();
+        }.execute();
     }
 
     /**
@@ -145,6 +134,11 @@ public class RoomWindow extends javax.swing.JFrame {
         });
 
         comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }));
+        comboBoxBeds.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxBedsActionPerformed(evt);
+            }
+        });
 
         buttonRemove.setText("remove");
         buttonRemove.setEnabled(false);
@@ -245,13 +239,16 @@ public class RoomWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonManageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonManageActionPerformed
-        final AccommodationsDialog aw = new AccommodationsDialog(this, true);
-        int selectedRow = getSelectedRow();
         Room room = getSelectedRoom();
+                
+        final AccommodationsDialog aw = new AccommodationsDialog(this, true);
         aw.setRoom(room);
         aw.setVisible(true);
-        model.fireTableCellUpdated(selectedRow, 1);
-        model.fireTableCellUpdated(selectedRow, 4);
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            model.fireTableCellUpdated(i, 1);
+            model.fireTableCellUpdated(i, 4);
+        }
     }//GEN-LAST:event_buttonManageActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -260,11 +257,17 @@ public class RoomWindow extends javax.swing.JFrame {
         w.setRoom(room);
         w.setVisible(true);
         
-        if (room.getId() != null) {
-            model.addRoom(rm.getRoom(room.getNumber()));
-        }
-        
-        selectLastRow();
+        new SwingWorker<Void, Void>(){
+            @Override
+            protected Void doInBackground() throws Exception {
+                if (room.getId() != null) {
+                    model.addRoom(rm.getRoom(room.getNumber()));
+                    selectLastRow();   
+                }
+  
+                return null;
+            }
+        }.execute();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void buttonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditActionPerformed
@@ -273,14 +276,28 @@ public class RoomWindow extends javax.swing.JFrame {
         Room room = getSelectedRoom();
         w.setRoom(room);
         w.setVisible(true);
-        model.setRoomAt(selectedRow, rm.getRoom(room.getNumber()));
+        
+        new SwingWorker<Void, Void>() {
+            @Override
+            public Void doInBackground() throws Exception {
+                model.setRoomAt(selectedRow, rm.getRoom(room.getNumber()));
+                return null;
+            }
+        }.execute();     
     }//GEN-LAST:event_buttonEditActionPerformed
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
         int selectedRow = getSelectedRow();
         Room room = getSelectedRoom();
         model.deleteRoom(selectedRow, room);
-        rm.deleteRoom(room);
+        
+        new SwingWorker<Void, Void>(){
+            @Override
+            public Void doInBackground() throws Exception {
+                rm.deleteRoom(room);
+                return null;
+            }
+        }.execute();
         
         selectRow(selectedRow);
     }//GEN-LAST:event_buttonRemoveActionPerformed
@@ -308,6 +325,10 @@ public class RoomWindow extends javax.swing.JFrame {
     private void roomsTableComponentRemoved(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_roomsTableComponentRemoved
         lblFilteredRooms.setText(String.valueOf(model.getRowCount()));
     }//GEN-LAST:event_roomsTableComponentRemoved
+
+    private void comboBoxBedsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxBedsActionPerformed
+        updateSorter();
+    }//GEN-LAST:event_comboBoxBedsActionPerformed
 
     /**
      * @param args the command line arguments
