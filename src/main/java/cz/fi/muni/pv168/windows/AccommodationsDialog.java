@@ -20,6 +20,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,6 +32,9 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     private List<Room> rooms;
     private final RoomManager rm = RoomManagerImpl.getInstance();
     private final HotelManager hm = HotelManagerImpl.getInstance();
+    
+    public final static Logger log = LoggerFactory.getLogger(AccommodationsDialog.class);
+    
     /**
      * Creates new form AccommodationsDialog
      */

@@ -15,6 +15,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -22,6 +24,8 @@ import javax.swing.event.ListSelectionListener;
  */
 public class GuestListDialog extends javax.swing.JDialog {
     private Guest guest = null;
+    
+    public final static Logger log = LoggerFactory.getLogger(GuestListDialog.class);
     
     /**
      * Creates new form GuestListDialog

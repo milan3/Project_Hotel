@@ -14,6 +14,8 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,6 +25,9 @@ public class RoomWindow extends javax.swing.JFrame {
     private final RoomManager rm;
     private final RoomsTableModel model;
     private TableRowSorter<RoomsTableModel> sorter;
+    
+    public final static Logger log = LoggerFactory.getLogger(RoomWindow.class);
+    
     /**
      * Creates new form RoomWindow
      */
@@ -400,12 +405,12 @@ public class RoomWindow extends javax.swing.JFrame {
             boolean available = chkBoxAvailable.isSelected();
 
             sorter.setRowFilter(new TableRoomsFilter(number, beds, balcony, available));
-            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
             selectFirstRow();
         } else {
             sorter.setRowFilter(null);
-            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
         } 
+        
+        lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

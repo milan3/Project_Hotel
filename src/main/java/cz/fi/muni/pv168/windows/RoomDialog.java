@@ -11,6 +11,8 @@ import cz.fi.muni.pv168.RoomManagerImpl;
 import cz.fi.muni.pv168.ServiceFailureException;
 import java.math.BigDecimal;
 import javax.swing.SwingWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,6 +20,8 @@ import javax.swing.SwingWorker;
  */
 public class RoomDialog extends javax.swing.JDialog {
     private Room room;
+    
+    public final static Logger log = LoggerFactory.getLogger(RoomDialog.class);
     
     /**
      * Creates new form RoomDialog

@@ -15,13 +15,16 @@ import java.awt.Frame;
 import java.time.LocalDate;
 import java.util.Date;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class GuestAccommodationDialog extends javax.swing.JDialog {
-
+    public final static Logger log = LoggerFactory.getLogger(GuestAccommodationDialog.class);
+    
     private Accommodation accommodation;
     private Guest guest = null;
     private Room room;

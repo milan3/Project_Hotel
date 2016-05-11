@@ -7,12 +7,15 @@ package cz.fi.muni.pv168.windows;
 
 import cz.fi.muni.pv168.HotelJdbc;
 import java.sql.SQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class HlavneOknoAplikacie extends javax.swing.JFrame {
+    public final static Logger log = LoggerFactory.getLogger(HlavneOknoAplikacie.class);
     
     /**
      * Creates new form NewJFrame

@@ -5,12 +5,16 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class GuestDialog extends javax.swing.JDialog {
-
+    public final static Logger log = LoggerFactory.getLogger(GuestDialog.class);
+    
     /**
      * Creates new form GuestDialog
      */

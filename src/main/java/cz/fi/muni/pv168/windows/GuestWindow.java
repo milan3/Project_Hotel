@@ -7,12 +7,15 @@ package cz.fi.muni.pv168.windows;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class GuestWindow extends javax.swing.JFrame {
+    public final static Logger log = LoggerFactory.getLogger(GuestWindow.class);
     
     /**
      * Creates new form GuestWindow
