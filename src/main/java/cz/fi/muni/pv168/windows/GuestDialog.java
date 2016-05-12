@@ -5,12 +5,14 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import java.util.ResourceBundle;
+
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class GuestDialog extends javax.swing.JDialog {
-
+    private static ResourceBundle rs = StaticBundle.getInstance();
     /**
      * Creates new form GuestDialog
      */
@@ -34,9 +36,9 @@ public class GuestDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        addButton.setText("Submit");
+        addButton.setText(rs.getString("submit"));
 
-        jLabel1.setText("Name:");
+        jLabel1.setText(rs.getString("name")+" ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

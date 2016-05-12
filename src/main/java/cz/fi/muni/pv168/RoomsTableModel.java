@@ -5,11 +5,14 @@
  */
 package cz.fi.muni.pv168;
 
+import cz.fi.muni.pv168.windows.StaticBundle;
+
+import javax.swing.table.AbstractTableModel;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -17,6 +20,8 @@ import javax.swing.table.AbstractTableModel;
  */
 public class RoomsTableModel extends AbstractTableModel{
     private List<Room> rooms = new ArrayList<>();
+    private ResourceBundle rs = StaticBundle.getInstance();
+
     
     @Override
     public int getRowCount() {
@@ -43,7 +48,7 @@ public class RoomsTableModel extends AbstractTableModel{
             case 3:
                 return room.hasBalcony();
             case 4: 
-                return hm.isAvailable(room) ? "Available" : "Unavailable";
+                return hm.isAvailable(room) ? rs.getString("available") : rs.getString("unavailable");
             default:
                 throw new IllegalArgumentException("columnIndex");
         }
@@ -53,13 +58,13 @@ public class RoomsTableModel extends AbstractTableModel{
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "Number";
+                return rs.getString("number");
             case 1:
-                return "Beds";
+                return rs.getString("beds");
             case 2:
-                return "Price";
+                return rs.getString("price");
             case 3:
-                return "Balcony";
+                return rs.getString("balcony");
             case 4:
                 return "Status";
             default:

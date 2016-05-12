@@ -14,6 +14,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -23,6 +24,7 @@ public class RoomWindow extends javax.swing.JFrame {
     private final RoomManager rm;
     private final RoomsTableModel model;
     private TableRowSorter<RoomsTableModel> sorter;
+    private static ResourceBundle rs = StaticBundle.getInstance();
     /**
      * Creates new form RoomWindow
      */
@@ -54,7 +56,7 @@ public class RoomWindow extends javax.swing.JFrame {
             public Void doInBackground() throws Exception {
                 RoomManager rm = RoomManagerImpl.getInstance();      
                 model.addAll(rm.getAllRooms()); 
-                lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
+                lblFilteredRooms.setText(String.valueOf(rs.getString("filtered_rooms") + ": " + roomsTable.getRowCount()));
                 selectFirstRow();
                 return null;
             }
@@ -99,9 +101,9 @@ public class RoomWindow extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(roomsTable);
 
-        jLabel6.setText("Number");
+        jLabel6.setText(rs.getString("number"));
 
-        jLabel7.setText("Beds");
+        jLabel7.setText(rs.getString("beds"));
 
         txtFieldNumber.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -109,23 +111,23 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
-        chkBoxAvailable.setText("Available");
+        chkBoxAvailable.setText(rs.getString("available"));
         chkBoxAvailable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkBoxAvailableActionPerformed(evt);
             }
         });
 
-        chkBoxBalcony.setText("Balcony");
+        chkBoxBalcony.setText(rs.getString("balcony"));
         chkBoxBalcony.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkBoxBalconyActionPerformed(evt);
             }
         });
 
-        lblFilteredRooms.setText("0 filtered rooms");
+        lblFilteredRooms.setText(rs.getString("0_filtered_rooms"));
 
-        buttonManage.setText("manage accommodations");
+        buttonManage.setText(rs.getString("manage_accommodations"));
         buttonManage.setEnabled(false);
         buttonManage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,14 +135,14 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
-        comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }));
+        comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
         comboBoxBeds.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboBoxBedsActionPerformed(evt);
             }
         });
 
-        buttonRemove.setText("remove");
+        buttonRemove.setText(rs.getString("remove"));
         buttonRemove.setEnabled(false);
         buttonRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -148,14 +150,14 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("add");
+        jButton4.setText(rs.getString("add"));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
 
-        buttonEdit.setText("edit");
+        buttonEdit.setText(rs.getString("edit"));
         buttonEdit.setEnabled(false);
         buttonEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,7 +165,7 @@ public class RoomWindow extends javax.swing.JFrame {
             }
         });
 
-        chkBoxFilter.setText("Use filter");
+        chkBoxFilter.setText(rs.getString("use_filter"));
         chkBoxFilter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkBoxFilterActionPerformed(evt);
@@ -400,11 +402,11 @@ public class RoomWindow extends javax.swing.JFrame {
             boolean available = chkBoxAvailable.isSelected();
 
             sorter.setRowFilter(new TableRoomsFilter(number, beds, balcony, available));
-            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
+            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
             selectFirstRow();
         } else {
             sorter.setRowFilter(null);
-            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + " filtered rooms");
+            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
         } 
     }
     

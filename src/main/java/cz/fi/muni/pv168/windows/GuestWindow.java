@@ -7,12 +7,14 @@ package cz.fi.muni.pv168.windows;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import java.util.ResourceBundle;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class GuestWindow extends javax.swing.JFrame {
+    private static ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form GuestWindow
@@ -56,7 +58,7 @@ public class GuestWindow extends javax.swing.JFrame {
         jLabel3.setText("Filter");
         jLabel3.setToolTipText("");
 
-        jLabel4.setText("0 guests filtered");
+        jLabel4.setText(rs.getString("0_guests_filtered"));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -66,56 +68,56 @@ public class GuestWindow extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Name", "Room", "From", "To"
+                rs.getString("name"), rs.getString("room"), rs.getString("from"), rs.getString("to")
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("change accommodation");
+        jButton1.setText(rs.getString("change_accommodation"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Name");
+        jLabel2.setText(rs.getString("name"));
 
-        jLabel5.setText("Room");
+        jLabel5.setText(rs.getString("room"));
         jLabel5.setToolTipText("");
 
-        jButton2.setText("remove");
+        jButton2.setText(rs.getString("remove"));
 
-        jButton3.setText("add");
+        jButton3.setText(rs.getString("add"));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
 
-        jButton4.setText("edit");
+        jButton4.setText(rs.getString("edit"));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
 
-        jMenu1.setText("File");
+        jMenu1.setText(rs.getString("file"));
 
-        jMenuItem1.setText("Exit");
+        jMenuItem1.setText(rs.getString("exit"));
         jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Guests");
+        jMenu2.setText(rs.getString("guests"));
 
-        jMenuItem2.setText("Manage guests");
+        jMenuItem2.setText(rs.getString("manage_guests"));
         jMenu2.add(jMenuItem2);
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("Rooms");
+        jMenu3.setText(rs.getString("rooms"));
 
-        jMenuItem3.setText("Manage rooms");
+        jMenuItem3.setText(rs.getString("manage_rooms"));
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);

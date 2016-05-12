@@ -64,7 +64,7 @@ public class Room {
 
     @Override
     public String toString() {
-        return "Room(" + number + ")";
+        return Integer.toString(number);
     }
 
     @Override

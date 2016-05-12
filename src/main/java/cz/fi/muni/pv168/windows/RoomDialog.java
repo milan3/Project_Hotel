@@ -9,8 +9,10 @@ import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
 import cz.fi.muni.pv168.ServiceFailureException;
+
+import javax.swing.*;
 import java.math.BigDecimal;
-import javax.swing.SwingWorker;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -18,6 +20,7 @@ import javax.swing.SwingWorker;
  */
 public class RoomDialog extends javax.swing.JDialog {
     private Room room;
+    private static ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form RoomDialog
@@ -49,18 +52,18 @@ public class RoomDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel2.setText("Number:");
+        jLabel2.setText(rs.getString("number") + ":");
 
-        jLabel3.setText("Beds:");
+        jLabel3.setText(rs.getString("beds") + ":");
 
-        jLabel4.setText("Price:");
+        jLabel4.setText(rs.getString("price") + ":");
 
-        jLabel5.setText("Balcony:");
+        jLabel5.setText(rs.getString("balcony") + ":");
         jLabel5.setToolTipText("");
 
-        chkBoxBalcony.setText("Has balcony");
+        chkBoxBalcony.setText(rs.getString("has_balcony"));
 
-        jButton1.setText("submit");
+        jButton1.setText(rs.getString("submit"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -70,7 +73,7 @@ public class RoomDialog extends javax.swing.JDialog {
         lblError.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblError.setForeground(new java.awt.Color(153, 0, 51));
 
-        comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }));
+        comboBoxBeds.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

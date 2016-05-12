@@ -5,21 +5,16 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import cz.fi.muni.pv168.Accommodation;
-import cz.fi.muni.pv168.AccommodationsTableModel;
-import cz.fi.muni.pv168.HotelManager;
-import cz.fi.muni.pv168.HotelManagerImpl;
-import cz.fi.muni.pv168.Room;
-import cz.fi.muni.pv168.RoomManager;
-import cz.fi.muni.pv168.RoomManagerImpl;
-import java.awt.Frame;
+import cz.fi.muni.pv168.*;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -30,6 +25,8 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     private List<Room> rooms;
     private final RoomManager rm = RoomManagerImpl.getInstance();
     private final HotelManager hm = HotelManagerImpl.getInstance();
+    private static ResourceBundle rs = StaticBundle.getInstance();
+
     /**
      * Creates new form AccommodationsDialog
      */
@@ -66,6 +63,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
                 new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
+
                         fillTable(room);
                         selectFirstRow();
                         return null;
@@ -99,14 +97,14 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         tableAccommodations.setModel(new AccommodationsTableModel());
         jScrollPane1.setViewportView(tableAccommodations);
 
-        buttonAccommodate.setText("accommodate guest");
+        buttonAccommodate.setText(rs.getString("accommodate_guest"));
         buttonAccommodate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonAccommodateActionPerformed(evt);
             }
         });
 
-        buttonRemove.setText("remove accommodation");
+        buttonRemove.setText(rs.getString("remove_accommodation"));
         buttonRemove.setEnabled(false);
         buttonRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,7 +112,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
             }
         });
 
-        buttonChange.setText("change accommodation");
+        buttonChange.setText(rs.getString("change_accommodation"));
         buttonChange.setEnabled(false);
         buttonChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -288,11 +286,11 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     
     private boolean updateAvailableLabel(Room room) {
         if (hm.isAvailable(room)) {
-            lblAvailable.setText("Available");
+            lblAvailable.setText(rs.getString("available"));
             lblAvailable.setBackground(java.awt.Color.GREEN);
             return true;
         } else {
-            lblAvailable.setText("Unavailable");
+            lblAvailable.setText(rs.getString("unavailable"));
             lblAvailable.setBackground(java.awt.Color.RED);
             return false;
         }
