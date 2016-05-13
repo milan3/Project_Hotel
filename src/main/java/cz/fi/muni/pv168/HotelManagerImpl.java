@@ -255,18 +255,6 @@ public class HotelManagerImpl implements HotelManager {
         return acc;
     }
     
-    @Override
-    public Accommodation getAccommodationByGuest(Guest guest) {
-        Accommodation acc = null;
-        
-        try {
-            acc = jdbc.queryForObject("SELECT * FROM ACCOMMODATION WHERE guest=?", RowMappers.accommodationMapper, guest.getId());
-        } catch(DataAccessException e) {
-        }
-        
-        return acc;
-    }
-    
     private static Timestamp toTimestamp(LocalDate localDate) {
         return Timestamp.valueOf(localDate.atStartOfDay());
     }
