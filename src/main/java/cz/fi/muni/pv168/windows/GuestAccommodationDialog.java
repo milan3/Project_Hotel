@@ -78,13 +78,13 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel3.setText("To");
+        jLabel3.setText(rs.getString("to"));
 
-        jLabel4.setText("Room:");
+        jLabel4.setText(rs.getString("room")+":");
 
-        jLabel1.setText("Price:");
+        jLabel1.setText(rs.getString("price")+":");
 
-        buttonSubmit.setText("submit");
+        buttonSubmit.setText(rs.getString("submit"));
         buttonSubmit.setEnabled(false);
         buttonSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,16 +104,16 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             }
         });
 
-        buttonChange.setText("change");
+        buttonChange.setText(rs.getString("change"));
         buttonChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonChangeActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("From");
+        jLabel2.setText(rs.getString("from"));
 
-        jLabel5.setText("Guest:");
+        jLabel5.setText(rs.getString("guest")+":");
 
         lblError.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblError.setForeground(new java.awt.Color(255, 0, 51));

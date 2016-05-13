@@ -5,7 +5,10 @@
  */
 package cz.fi.muni.pv168;
 
+import cz.fi.muni.pv168.windows.StaticBundle;
+
 import javax.swing.RowFilter;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -16,6 +19,7 @@ public class TableRoomsFilter extends RowFilter<Object, Object>{
     private Integer beds;
     private boolean balcony;
     private boolean available;
+    private ResourceBundle rs = StaticBundle.getInstance();
 
     public TableRoomsFilter(Integer number, Integer beds, boolean balcony, boolean available) {
         this.number = number;
@@ -30,7 +34,7 @@ public class TableRoomsFilter extends RowFilter<Object, Object>{
         String bedsStr = (String)entry.getValue(1);
         Integer bedsInt = Integer.valueOf(bedsStr.substring(bedsStr.indexOf("/") + 1));
         Boolean balcony = (Boolean) entry.getValue(3);
-        Boolean available = ((String) entry.getValue(4)).equals("Available") ? true : false;
+        Boolean available = ((String) entry.getValue(4)).equals(rs.getString("available")) ? true : false;
                
         if (this.number != null) {
             return number.equals(this.number) && bedsInt.equals(this.beds) && balcony == this.balcony && available == this.available;
