@@ -5,11 +5,14 @@
  */
 package cz.fi.muni.pv168;
 
+import cz.fi.muni.pv168.windows.StaticBundle;
+
+import javax.swing.table.AbstractTableModel;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -17,6 +20,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class AccommodationsTableModel extends AbstractTableModel{
     private final List<Accommodation> accommodations = new ArrayList<>();
+    private ResourceBundle rs = StaticBundle.getInstance();
     
     @Override
     public int getRowCount() {
@@ -48,11 +52,11 @@ public class AccommodationsTableModel extends AbstractTableModel{
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "Name";
+                return rs.getString("name");
             case 1:
-                return "From";
+                return rs.getString("from");
             case 2:
-                return "To";
+                return rs.getString("to");
             default:
                 throw new IllegalArgumentException("columnIndex");
         }

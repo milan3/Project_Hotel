@@ -5,29 +5,24 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import cz.fi.muni.pv168.Accommodation;
-import cz.fi.muni.pv168.Guest;
-import cz.fi.muni.pv168.HotelManager;
-import cz.fi.muni.pv168.HotelManagerImpl;
-import cz.fi.muni.pv168.Room;
-import cz.fi.muni.pv168.ServiceFailureException;
-import java.awt.Frame;
+import cz.fi.muni.pv168.*;
+
+import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDate;
 import java.util.Date;
-import javax.swing.SwingUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ResourceBundle;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class GuestAccommodationDialog extends javax.swing.JDialog {
-    public final static Logger log = LoggerFactory.getLogger(GuestAccommodationDialog.class);
-    
+
     private Accommodation accommodation;
     private Guest guest = null;
     private Room room;
+    private static ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form GuestAccommodationDialog
@@ -214,7 +209,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         final GuestListDialog gld = new GuestListDialog((Frame) SwingUtilities.getWindowAncestor(this), true, room);
         gld.setVisible(true);
         guest = gld.getGuest();
-        lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
+        //lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
         checkEnabled();
     }//GEN-LAST:event_buttonChangeActionPerformed
 
@@ -303,7 +298,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         this.room = room;
         lblRoom.setText(String.valueOf(room.getNumber()));
         lblPrice.setText(String.valueOf(room.getPrice()));
-        lblGuest.setText("Set a guest");
+        //lblGuest.setText("Set a guest");
     }
     
     public Accommodation getAccommodation() {

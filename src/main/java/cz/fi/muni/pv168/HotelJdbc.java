@@ -5,12 +5,13 @@
  */
 package cz.fi.muni.pv168;
 
-import java.sql.SQLException;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.sql.SQLException;
 
 /**
  *

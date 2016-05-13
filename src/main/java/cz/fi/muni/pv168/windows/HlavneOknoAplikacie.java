@@ -6,29 +6,27 @@
 package cz.fi.muni.pv168.windows;
 
 import cz.fi.muni.pv168.HotelJdbc;
+
 import java.sql.SQLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ResourceBundle;
 
 /**
  *
  * @author Radoslav Karlik (422358)
  */
 public class HlavneOknoAplikacie extends javax.swing.JFrame {
-    public final static Logger log = LoggerFactory.getLogger(HlavneOknoAplikacie.class);
-    
+
+    private static ResourceBundle rs = StaticBundle.getInstance();
+
     /**
      * Creates new form NewJFrame
      */
     public HlavneOknoAplikacie() throws SQLException {
         initComponents();
-        /*ResourceBundle rs = ResourceBundle.getBundle("language");
         
         jTabbedPane1.addTab(rs.getString("rooms"), new RoomWindow().getContentPane());
-        jTabbedPane1.addTab(rs.getString("guests"), new GuestWindow().getContentPane());*/
-                
-        jTabbedPane1.addTab("rooms", new RoomWindow().getContentPane());
-        jTabbedPane1.addTab("guests", new GuestWindow().getContentPane());    
+        jTabbedPane1.addTab(rs.getString("guests"), new GuestWindow().getContentPane());
+
     }
 
     /**
@@ -106,4 +104,5 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -5,18 +5,13 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import cz.fi.muni.pv168.Guest;
-import cz.fi.muni.pv168.GuestListRenderer;
-import cz.fi.muni.pv168.HotelManager;
-import cz.fi.muni.pv168.HotelManagerImpl;
-import cz.fi.muni.pv168.Room;
-import java.util.List;
-import javax.swing.DefaultListModel;
-import javax.swing.SwingWorker;
+import cz.fi.muni.pv168.*;
+
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -24,8 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GuestListDialog extends javax.swing.JDialog {
     private Guest guest = null;
-    
-    public final static Logger log = LoggerFactory.getLogger(GuestListDialog.class);
+    private static ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form GuestListDialog
@@ -84,7 +78,7 @@ public class GuestListDialog extends javax.swing.JDialog {
         listGuests.setToolTipText("");
         jScrollPane1.setViewportView(listGuests);
 
-        jButton1.setText("submit");
+        jButton1.setText(rs.getString("submit"));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
