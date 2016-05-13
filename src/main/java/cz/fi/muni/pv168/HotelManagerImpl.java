@@ -244,7 +244,7 @@ public class HotelManagerImpl implements HotelManager {
     }
     
     @Override
-    public Room getRoomByGuest(Guest guest) {
+    public Accommodation getAccommodationByGuest(Guest guest) {
         Accommodation acc = null;
         
         try {
@@ -252,7 +252,7 @@ public class HotelManagerImpl implements HotelManager {
         } catch(DataAccessException e) {
         }
         
-        return (acc != null) ? acc.getRoom() : null;
+        return acc;
     }
     
     private static Timestamp toTimestamp(LocalDate localDate) {
