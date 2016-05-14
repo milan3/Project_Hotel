@@ -14,6 +14,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.util.ResourceBundle;
 
 /**
@@ -305,15 +306,21 @@ public class RoomWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonRemoveActionPerformed
 
     private void txtFieldNumberKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldNumberKeyReleased
-        updateSorter();
+        if (chkBoxFilter.isSelected()) {
+            updateSorter();
+        }
     }//GEN-LAST:event_txtFieldNumberKeyReleased
 
     private void chkBoxBalconyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxBalconyActionPerformed
-        updateSorter();
+        if (chkBoxFilter.isSelected()) {
+            updateSorter();
+        }
     }//GEN-LAST:event_chkBoxBalconyActionPerformed
 
     private void chkBoxAvailableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxAvailableActionPerformed
-        updateSorter();
+        if (chkBoxFilter.isSelected()) {
+            updateSorter();
+        }
     }//GEN-LAST:event_chkBoxAvailableActionPerformed
 
     private void chkBoxFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxFilterActionPerformed
@@ -329,7 +336,9 @@ public class RoomWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_roomsTableComponentRemoved
 
     private void comboBoxBedsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxBedsActionPerformed
-        updateSorter();
+        if (chkBoxFilter.isSelected()) {
+            updateSorter();
+        }
     }//GEN-LAST:event_comboBoxBedsActionPerformed
 
     /**
@@ -395,19 +404,24 @@ public class RoomWindow extends javax.swing.JFrame {
     }
     
     private void updateSorter() {
-        if (chkBoxFilter.isSelected()) {
-            Integer number = !txtFieldNumber.getText().equals("") ? Integer.valueOf(txtFieldNumber.getText()) : null;
-            Integer beds = comboBoxBeds.getSelectedIndex() + 1;
-            boolean balcony = chkBoxBalcony.isSelected();
-            boolean available = chkBoxAvailable.isSelected();
+        try {
+            txtFieldNumber.setBackground(Color.WHITE);
+            if (chkBoxFilter.isSelected()) {
+                Integer number = !txtFieldNumber.getText().equals("") ? Integer.valueOf(txtFieldNumber.getText()) : null;
+                Integer beds = comboBoxBeds.getSelectedIndex() + 1;
+                boolean balcony = chkBoxBalcony.isSelected();
+                boolean available = chkBoxAvailable.isSelected();
 
-            sorter.setRowFilter(new TableRoomsFilter(number, beds, balcony, available));
-            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
-            selectFirstRow();
-        } else {
-            sorter.setRowFilter(null);
-            lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
-        } 
+                sorter.setRowFilter(new TableRoomsFilter(number, beds, balcony, available));
+                lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
+                selectFirstRow();
+            } else {
+                sorter.setRowFilter(null);
+                lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
+            }
+        } catch (NumberFormatException ex) {
+            txtFieldNumber.setBackground(Color.RED);
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

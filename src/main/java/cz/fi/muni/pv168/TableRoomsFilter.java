@@ -30,7 +30,6 @@ public class TableRoomsFilter extends RowFilter<Object, Object>{
     
     @Override
     public boolean include(Entry<? extends Object, ? extends Object> entry) {
-        Integer number = (Integer) entry.getValue(0);
         String bedsStr = (String)entry.getValue(1);
         Integer bedsInt = Integer.valueOf(bedsStr.substring(bedsStr.indexOf("/") + 1));
         Boolean balcony = (Boolean) entry.getValue(3);
