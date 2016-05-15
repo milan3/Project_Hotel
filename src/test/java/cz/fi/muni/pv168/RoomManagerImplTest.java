@@ -4,32 +4,32 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.derby.jdbc.EmbeddedDataSource;
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.DERBY;
 
 /**
  * Created by Milan on 15.03.2016.
  */
 public class RoomManagerImplTest {
-
+    private EmbeddedDatabase db;
     private RoomManager manager = RoomManagerImpl.getInstance();
 
     @Before
     public void setUp() throws  SQLException{
-        HotelJdbc.init();
+        db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();;
     }
 
     @After
     public void tearDown() throws SQLException {
-        HotelJdbc.destroy();
+        db.shutdown();
     }
 
     @Test

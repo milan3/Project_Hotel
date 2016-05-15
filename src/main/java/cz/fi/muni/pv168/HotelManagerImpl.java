@@ -12,6 +12,9 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -25,25 +28,24 @@ public class HotelManagerImpl implements HotelManager {
     public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
     
     public static final String DEPARTURE_AFTER_ARRIVAL = "Departure must be after arrival";
-    
-    private static HotelManager instance = null;
-    
-    public static HotelManager getInstance() { 
-        if (instance == null) {
-            instance = new HotelManagerImpl();
-        }
-        
-        return instance;
-    }
    
-    public HotelManagerImpl() {
-        this.guestManager = null;
-        this.roomManager = null;
-        this.jdbc = HotelJdbc.getJdbc();
-        this.guestManager = GuestManagerImpl.getInstance();
-        this.roomManager = RoomManagerImpl.getInstance();
+    public static HotelManager getInstance() {
+        return new AnnotationConfigApplicationContext(SpringConfig.class).getBean(HotelManager.class);
+    }
+    
+    public HotelManagerImpl(DataSource dataSource) {
+        this.jdbc =  this.jdbc = new JdbcTemplate(dataSource);
     }
 
+    public void setGuestManager(GuestManager guestManager) {
+        this.guestManager = guestManager;
+    }
+
+    public void setRoomManager(RoomManager roomManager) {
+        this.roomManager = roomManager;
+    }
+
+    @Transactional
     @Override
     public List<Guest> findGuests(Room room) {
         logDebug("finding guests in room: " + room);
@@ -62,7 +64,8 @@ public class HotelManagerImpl implements HotelManager {
         logDebug("returned all guests from room " + room);
         return guests;
     }
-    //asi lepsie jak findGuests, zatial takto lebo sa zide
+
+    @Transactional
     public List<Accommodation> findAccommodations(Room room) {
         try {
             return jdbc.query("SELECT * FROM ACCOMMODATION WHERE room=?", RowMappers.accommodationMapper, room.getId());
@@ -72,6 +75,7 @@ public class HotelManagerImpl implements HotelManager {
         }
     }
     
+    @Transactional
     @Override
     public List<Room> getRooms(int floor) {
         logDebug("finding all rooms on floor: " + floor);
@@ -162,6 +166,7 @@ public class HotelManagerImpl implements HotelManager {
         logDebug("Canceled accommodation of guest" + guest);
     }
 
+    @Transactional
     @Override
     public List<Room> getAvailableRooms() {
         logDebug("getting all available rooms");
@@ -223,6 +228,7 @@ public class HotelManagerImpl implements HotelManager {
         logDebug("accommodation: " + accommodation + "updated");
     }
     
+    @Transactional
     @Override
     public List<Guest> getGuestsWithoutAccommodation() {
         List<Room> rooms = roomManager.getAllRooms();

@@ -25,7 +25,7 @@ public class RoomWindow extends javax.swing.JFrame {
     private final RoomManager rm;
     private final RoomsTableModel model;
     private TableRowSorter<RoomsTableModel> sorter;
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
     /**
      * Creates new form RoomWindow
      */

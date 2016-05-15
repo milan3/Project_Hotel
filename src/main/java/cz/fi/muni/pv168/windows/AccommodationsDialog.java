@@ -22,10 +22,10 @@ import java.util.ResourceBundle;
  */
 public class AccommodationsDialog extends javax.swing.JDialog {
     private final AccommodationsTableModel model;
-    private List<Room> rooms;
+    private final List<Room> rooms;
     private final RoomManager rm = RoomManagerImpl.getInstance();
     private final HotelManager hm = HotelManagerImpl.getInstance();
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
 
     /**
      * Creates new form AccommodationsDialog

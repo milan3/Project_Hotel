@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  */
 public class RoomDialog extends javax.swing.JDialog {
     private Room room;
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form RoomDialog
@@ -171,7 +171,7 @@ public class RoomDialog extends javax.swing.JDialog {
             @Override
             public Void doInBackground() throws Exception {
                 try {
-                    if (room.getId() == null) {        
+                    if (room.getId() == null) {  
                         rm.createRoom(room);
                     } else {
                         rm.updateRoom(room);
@@ -188,7 +188,7 @@ public class RoomDialog extends javax.swing.JDialog {
                         case RoomManagerImpl.WRONG_NUMBER_OF_BEDS:
                             comboBoxBeds.setBackground(java.awt.Color.red);
                             return null;
-                        default:
+                        default: 
                             return null;
                     }
                 } catch(IllegalArgumentException e) {

@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  */
 public class AccommodationsTableModel extends AbstractTableModel{
     private final List<Accommodation> accommodations = new ArrayList<>();
-    private ResourceBundle rs = StaticBundle.getInstance();
+    private final ResourceBundle rs = StaticBundle.getInstance();
     
     @Override
     public int getRowCount() {

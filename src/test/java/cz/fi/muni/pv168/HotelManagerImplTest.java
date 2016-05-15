@@ -1,38 +1,38 @@
 package cz.fi.muni.pv168;
 
-import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.DERBY;
 
 /**
  * Created by Milan on 15.03.2016.
  */
 public class HotelManagerImplTest {
+    private EmbeddedDatabase db;
     private HotelManager hotelManager = HotelManagerImpl.getInstance();;
     private GuestManager guestManager = GuestManagerImpl.getInstance();
     private RoomManager roomManager = RoomManagerImpl.getInstance();;
 
     @Before
     public void setUp() throws  SQLException{
-        HotelJdbc.init();
+        db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();
     }
 
     @After
     public void tearDown() throws SQLException {
-        HotelJdbc.destroy();
+        db.shutdown();
     }
 
     @Test

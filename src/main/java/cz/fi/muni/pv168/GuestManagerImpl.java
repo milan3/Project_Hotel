@@ -10,6 +10,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Milan on 15.03.2016.
@@ -19,19 +22,13 @@ public class GuestManagerImpl implements GuestManager {
     private static final String GUEST_NULL = "guest is null";
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
-    
-    private static GuestManager instance = null;
-    
-    public static GuestManager getInstance() { 
-        if (instance == null) {
-            instance = new GuestManagerImpl();
-        }
-        
-        return instance;
+       
+    public static GuestManager getInstance() {
+        return new AnnotationConfigApplicationContext(SpringConfig.class).getBean(GuestManager.class);
     }
     
-    private GuestManagerImpl() {
-        this.jdbc = HotelJdbc.getJdbc();
+    public GuestManagerImpl(DataSource dataSource) {
+        this.jdbc = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -109,6 +106,7 @@ public class GuestManagerImpl implements GuestManager {
         return result;
     }
 
+    @Transactional
     @Override
     public List<Guest> getAllGuests() {
         logDebug("getting all guests");

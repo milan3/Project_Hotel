@@ -14,8 +14,8 @@ import java.util.ResourceBundle;
 
 
 public class GuestsTableModel  extends AbstractTableModel{
-    private List<Guest> guests = new ArrayList<>();
-    private ResourceBundle rs = StaticBundle.getInstance();
+    private final List<Guest> guests = new ArrayList<>();
+    private final ResourceBundle rs = StaticBundle.getInstance();
 
 
     @Override

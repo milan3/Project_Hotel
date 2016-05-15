@@ -6,8 +6,8 @@ import javax.swing.*;
  * Created by Milan on 13.05.2016.
  */
 public class TableGuestsFilter extends RowFilter<Object, Object> {
-    private String name;
-    private String room;
+    private final String name;
+    private final String room;
 
     public TableGuestsFilter(String name, String room) {
         this.name = name.equals("") ? null : name;

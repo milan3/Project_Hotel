@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
  * @author Radoslav Karlik (422358)
  */
 public class GuestDialog extends javax.swing.JDialog {
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
     private Guest guest;
     /**
      * Creates new form GuestDialog

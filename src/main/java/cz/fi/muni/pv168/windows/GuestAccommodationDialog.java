@@ -22,7 +22,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     private Accommodation accommodation;
     private Guest guest = null;
     private Room room;
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form GuestAccommodationDialog

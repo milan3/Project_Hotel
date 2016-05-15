@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  */
 public class GuestListDialog extends javax.swing.JDialog {
     private Guest guest = null;
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
     
     /**
      * Creates new form GuestListDialog

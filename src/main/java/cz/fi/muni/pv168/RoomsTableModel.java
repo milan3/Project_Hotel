@@ -19,8 +19,8 @@ import java.util.ResourceBundle;
  * @author Radoslav Karlik (422358)
  */
 public class RoomsTableModel extends AbstractTableModel{
-    private List<Room> rooms = new ArrayList<>();
-    private ResourceBundle rs = StaticBundle.getInstance();
+    private final List<Room> rooms = new ArrayList<>();
+    private final ResourceBundle rs = StaticBundle.getInstance();
 
     
     @Override

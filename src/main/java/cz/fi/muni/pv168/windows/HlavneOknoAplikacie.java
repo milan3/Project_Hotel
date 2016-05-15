@@ -5,8 +5,6 @@
  */
 package cz.fi.muni.pv168.windows;
 
-import cz.fi.muni.pv168.HotelJdbc;
-
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
@@ -16,10 +14,11 @@ import java.util.ResourceBundle;
  */
 public class HlavneOknoAplikacie extends javax.swing.JFrame {
 
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
 
     /**
      * Creates new form NewJFrame
+     * @throws java.sql.SQLException
      */
     public HlavneOknoAplikacie() throws SQLException {
         initComponents();
@@ -85,8 +84,6 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
-        HotelJdbc.init();
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -96,7 +93,6 @@ public class HlavneOknoAplikacie extends javax.swing.JFrame {
                 } catch(SQLException e) {
                     
                 }
-
             }
         });
     }

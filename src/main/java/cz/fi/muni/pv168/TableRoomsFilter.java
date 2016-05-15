@@ -15,11 +15,11 @@ import java.util.ResourceBundle;
  * @author Radoslav Karlik (422358)
  */
 public class TableRoomsFilter extends RowFilter<Object, Object>{
-    private Integer number;
-    private Integer beds;
-    private boolean balcony;
-    private boolean available;
-    private ResourceBundle rs = StaticBundle.getInstance();
+    private final Integer number;
+    private final Integer beds;
+    private final boolean balcony;
+    private final boolean available;
+    private final ResourceBundle rs = StaticBundle.getInstance();
 
     public TableRoomsFilter(Integer number, Integer beds, boolean balcony, boolean available) {
         this.number = number;

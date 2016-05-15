@@ -23,7 +23,7 @@ public class GuestWindow extends javax.swing.JFrame {
     private final HotelManager hm;
     private final GuestsTableModel model;
     private TableRowSorter<GuestsTableModel> sorter;
-    private static ResourceBundle rs = StaticBundle.getInstance();
+    private static final ResourceBundle rs = StaticBundle.getInstance();
     /**
      * Creates new form GuestWindow
      */
@@ -347,11 +347,11 @@ public class GuestWindow extends javax.swing.JFrame {
         });
     }
 
-    private void nameTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldNumberKeyReleased
+    private void nameTextFieldKeyReleased(java.awt.event.KeyEvent evt) {                                           
         updateSorter();
     }
 
-    private void roomTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFieldNumberKeyReleased
+    private void roomTextFieldKeyReleased(java.awt.event.KeyEvent evt) {                                           
         updateSorter();
     }
 

@@ -11,13 +11,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Milan on 15.03.2016.
  */
 public class RoomManagerImpl implements RoomManager {
 
-    private JdbcTemplate jdbc;
+    private final JdbcTemplate jdbc;
     //ERROR MESSAGES
     public static final String NEGATIVE_BEDS = "number of beds is negative";
     public static final String NEGATIVE_NUMBER = "number of room is negative";
@@ -25,20 +28,14 @@ public class RoomManagerImpl implements RoomManager {
     public static final String NUMBER_EXISTS = "room with the same number already exists";
     public static final String WRONG_NUMBER_OF_BEDS = "room cant have less beds than accommodated guests";
     
-    final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);   
     
-    private static RoomManager instance = null;
-    
-    public static RoomManager getInstance() { 
-        if (instance == null) {
-            instance = new RoomManagerImpl(); 
-        }
-        
-        return instance;
+    public static RoomManager getInstance() {
+        return new AnnotationConfigApplicationContext(SpringConfig.class).getBean(RoomManager.class);
     }
     
-    private RoomManagerImpl() { 
-        this.jdbc = HotelJdbc.getJdbc();
+    RoomManagerImpl(DataSource dataSource) { 
+        this.jdbc = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -140,6 +137,7 @@ public class RoomManagerImpl implements RoomManager {
         return result;
     }
     
+    @Transactional
     @Override
     public List<Room> getAllRooms() {
         logDebug("getting all rooms");
