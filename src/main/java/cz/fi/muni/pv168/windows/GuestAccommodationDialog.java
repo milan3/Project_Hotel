@@ -57,7 +57,8 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             
             buttonSubmit.setEnabled(true);
         } else {
-            lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
+            lblRoom.setText(room != null ? String.valueOf(room.getNumber()) : rs.getString("set_a_room"));
+            lblGuest.setText(guest != null ? guest.getFullName() : rs.getString("set_a_guest"));
         }
         
         datePickerFrom.setOpaque(true);
@@ -229,7 +230,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         final GuestListDialog gld = new GuestListDialog((Frame) SwingUtilities.getWindowAncestor(this), true, room);
         gld.setVisible(true);
         guest = gld.getGuest();
-        lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
+        lblGuest.setText(guest != null ? guest.getFullName() : rs.getString("set_a_guest"));
         checkEnabled();
     }//GEN-LAST:event_btnGuestChangeActionPerformed
 
@@ -318,7 +319,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         this.room = room;
         lblRoom.setText(String.valueOf(room.getNumber()));
         lblPrice.setText(String.valueOf(room.getPrice()));
-        //lblGuest.setText("Set a guest");
+        lblGuest.setText(rs.getString("set_a_guest"));
     }
     
     public Accommodation getAccommodation() {
