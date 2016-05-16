@@ -165,7 +165,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
 
     private void buttonAccommodateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAccommodateActionPerformed
         Accommodation accommodation = null;
-        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
+        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation, null);
         gaw.setRoom(getSelectedRoom());
         gaw.setVisible(true);
         accommodation = gaw.getAccommodation();
@@ -219,7 +219,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
 
     private void buttonChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChangeActionPerformed
         Accommodation accommodation = getSelectedAccommodation();
-        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
+        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation,null);
         gaw.setVisible(true);
         model.setAccommodationAt(getSelectedRow(), accommodation);
     }//GEN-LAST:event_buttonChangeActionPerformed

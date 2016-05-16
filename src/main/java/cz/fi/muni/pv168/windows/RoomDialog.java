@@ -179,13 +179,15 @@ public class RoomDialog extends javax.swing.JDialog {
             
                      dispose();
                 } catch(ServiceFailureException e) {
-                    lblError.setText(e.getMessage());
+                    //lblError.setText(e.getMessage());
 
                     switch (e.getMessage()) {
                         case RoomManagerImpl.NUMBER_EXISTS:
+                            lblError.setText(rs.getString("NUMBER_EXISTS"));
                             lblNumber.setBackground(java.awt.Color.red);
                             return null;
                         case RoomManagerImpl.WRONG_NUMBER_OF_BEDS:
+                            lblError.setText(rs.getString("WRONG_NUMBER_OF_BEDS"));
                             comboBoxBeds.setBackground(java.awt.Color.red);
                             return null;
                         default: 

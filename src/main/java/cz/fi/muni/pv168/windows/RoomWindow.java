@@ -5,6 +5,9 @@
  */
 package cz.fi.muni.pv168.windows;
 
+import cz.fi.muni.pv168.Guest;
+import cz.fi.muni.pv168.HotelManager;
+import cz.fi.muni.pv168.HotelManagerImpl;
 import cz.fi.muni.pv168.Room;
 import cz.fi.muni.pv168.RoomManager;
 import cz.fi.muni.pv168.RoomManagerImpl;
@@ -23,6 +26,7 @@ import java.util.ResourceBundle;
  */
 public class RoomWindow extends javax.swing.JFrame {
     private final RoomManager rm;
+    private final HotelManager hm;
     private final RoomsTableModel model;
     private TableRowSorter<RoomsTableModel> sorter;
     private static final ResourceBundle rs = StaticBundle.getInstance();
@@ -33,6 +37,7 @@ public class RoomWindow extends javax.swing.JFrame {
         initComponents();
         model = (RoomsTableModel) roomsTable.getModel();
         rm = RoomManagerImpl.getInstance();
+        hm = HotelManagerImpl.getInstance();
         
         roomsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             @Override
@@ -297,6 +302,9 @@ public class RoomWindow extends javax.swing.JFrame {
         new SwingWorker<Void, Void>(){
             @Override
             public Void doInBackground() throws Exception {
+                for (Guest guest : hm.findGuests(room)) {
+                    hm.cancelAccommodation(guest);
+                }
                 rm.deleteRoom(room);
                 return null;
             }
@@ -413,11 +421,11 @@ public class RoomWindow extends javax.swing.JFrame {
                 boolean available = chkBoxAvailable.isSelected();
 
                 sorter.setRowFilter(new TableRoomsFilter(number, beds, balcony, available));
-                lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
+                lblFilteredRooms.setText(String.valueOf(rs.getString("filtered_rooms") + ": " + roomsTable.getRowCount()));
                 selectFirstRow();
             } else {
                 sorter.setRowFilter(null);
-                lblFilteredRooms.setText(String.valueOf(roomsTable.getRowCount()) + rs.getString("filtered_rooms"));
+                lblFilteredRooms.setText(String.valueOf(rs.getString("filtered_rooms") + ": " + roomsTable.getRowCount()));
             }
         } catch (NumberFormatException ex) {
             txtFieldNumber.setBackground(Color.RED);

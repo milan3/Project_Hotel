@@ -27,7 +27,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     /**
      * Creates new form GuestAccommodationDialog
      */
-    public GuestAccommodationDialog(java.awt.Frame parent, boolean modal, Accommodation accommodation) {
+    public GuestAccommodationDialog(java.awt.Frame parent, boolean modal, Accommodation accommodation, Guest guest) {
         super(parent, modal);
         initComponents();
         
@@ -35,7 +35,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         
         if (this.accommodation != null) {
             room = accommodation.getRoom();
-            guest = accommodation.getGuest();
+            this.guest = accommodation.getGuest();
             LocalDate from = accommodation.getArrival();
             LocalDate to = accommodation.getDeparture();
             
@@ -47,6 +47,8 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             buttonChange.setEnabled(false);
             
             buttonSubmit.setEnabled(true);
+        } else {
+            lblGuest.setText(guest.getFullName());
         }
         
         datePickerFrom.setOpaque(true);
@@ -209,7 +211,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         final GuestListDialog gld = new GuestListDialog((Frame) SwingUtilities.getWindowAncestor(this), true, room);
         gld.setVisible(true);
         guest = gld.getGuest();
-        //lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
+        lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
         checkEnabled();
     }//GEN-LAST:event_buttonChangeActionPerformed
 
@@ -282,7 +284,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GuestAccommodationDialog dialog = new GuestAccommodationDialog(new javax.swing.JFrame(), true, null);
+                GuestAccommodationDialog dialog = new GuestAccommodationDialog(new javax.swing.JFrame(), true, null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

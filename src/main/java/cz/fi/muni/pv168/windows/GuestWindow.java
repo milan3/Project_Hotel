@@ -242,7 +242,7 @@ public class GuestWindow extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void buttonChangeAccActionPerformed(java.awt.event.ActionEvent evt) {
-        JDialog w = new GuestAccommodationDialog(this, true, null);
+        JDialog w = new GuestAccommodationDialog(this, true, null, getSelectedGuest());
         w.setVisible(true);
         this.setVisible(false);
     }
