@@ -32,10 +32,19 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         initComponents();
         
         this.accommodation = accommodation;     
+        this.guest = guest;
+        
+        if (parent instanceof RoomWindow) {
+            btnGuestChange.setVisible(true);
+            btnRoomChange.setVisible(false);
+        } else {
+            btnGuestChange.setVisible(false);
+            btnRoomChange.setVisible(true);
+        }
         
         if (this.accommodation != null) {
             room = accommodation.getRoom();
-            this.guest = accommodation.getGuest();
+            guest = accommodation.getGuest();
             LocalDate from = accommodation.getArrival();
             LocalDate to = accommodation.getDeparture();
             
@@ -44,11 +53,11 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             lblGuest.setText(String.valueOf(guest.getFullName()));
             datePickerFrom.setDate(java.sql.Date.valueOf(from));
             datePickerTo.setDate(java.sql.Date.valueOf(to));
-            buttonChange.setEnabled(false);
+            btnGuestChange.setEnabled(false);
             
             buttonSubmit.setEnabled(true);
         } else {
-            lblGuest.setText(guest.getFullName());
+            lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
         }
         
         datePickerFrom.setOpaque(true);
@@ -70,23 +79,24 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         buttonSubmit = new javax.swing.JButton();
         datePickerFrom = new org.jdesktop.swingx.JXDatePicker();
         datePickerTo = new org.jdesktop.swingx.JXDatePicker();
-        buttonChange = new javax.swing.JButton();
+        btnGuestChange = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         lblRoom = new javax.swing.JLabel();
         lblPrice = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         lblGuest = new javax.swing.JLabel();
         lblError = new javax.swing.JLabel();
+        btnRoomChange = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel3.setText(rs.getString("to"));
+        jLabel3.setText("To");
 
-        jLabel4.setText(rs.getString("room")+":");
+        jLabel4.setText("Room:");
 
-        jLabel1.setText(rs.getString("price")+":");
+        jLabel1.setText("Price:");
 
-        buttonSubmit.setText(rs.getString("submit"));
+        buttonSubmit.setText("submit");
         buttonSubmit.setEnabled(false);
         buttonSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -106,19 +116,21 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             }
         });
 
-        buttonChange.setText(rs.getString("change"));
-        buttonChange.addActionListener(new java.awt.event.ActionListener() {
+        btnGuestChange.setText("change");
+        btnGuestChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonChangeActionPerformed(evt);
+                btnGuestChangeActionPerformed(evt);
             }
         });
 
-        jLabel2.setText(rs.getString("from"));
+        jLabel2.setText("From");
 
-        jLabel5.setText(rs.getString("guest")+":");
+        jLabel5.setText("Guest:");
 
         lblError.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblError.setForeground(new java.awt.Color(255, 0, 51));
+
+        btnRoomChange.setText("change");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,58 +142,66 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                         .addGap(179, 179, 179)
                         .addComponent(lblPrice))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(132, 132, 132)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblRoom))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(54, 54, 54)
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblGuest))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addComponent(lblError))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(151, 151, 151)
-                        .addComponent(buttonSubmit)))
-                .addContainerGap(178, Short.MAX_VALUE))
+                        .addComponent(buttonSubmit))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(89, 89, 89)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblRoom))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblGuest)))
+                        .addGap(80, 80, 80)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnGuestChange)
+                            .addComponent(btnRoomChange))))
+                .addContainerGap(115, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(129, 129, 129)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(datePickerFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                                .addComponent(datePickerTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(48, 48, 48)
-                            .addComponent(buttonChange)))
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(datePickerFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                            .addComponent(datePickerTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap(140, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(lblRoom))
-                .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(lblGuest))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
-                .addComponent(lblPrice)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(btnRoomChange)
+                            .addComponent(lblRoom))
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(lblGuest))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 160, Short.MAX_VALUE)
+                        .addComponent(lblPrice))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(btnGuestChange)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buttonSubmit)
                 .addGap(35, 35, 35)
@@ -189,9 +209,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                 .addGap(21, 21, 21))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(61, 61, 61)
-                    .addComponent(buttonChange)
-                    .addGap(15, 15, 15)
+                    .addGap(101, 101, 101)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(datePickerFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -207,13 +225,13 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChangeActionPerformed
+    private void btnGuestChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuestChangeActionPerformed
         final GuestListDialog gld = new GuestListDialog((Frame) SwingUtilities.getWindowAncestor(this), true, room);
         gld.setVisible(true);
         guest = gld.getGuest();
         lblGuest.setText(guest != null ? guest.getFullName() : "Set a guest");
         checkEnabled();
-    }//GEN-LAST:event_buttonChangeActionPerformed
+    }//GEN-LAST:event_btnGuestChangeActionPerformed
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
         HotelManager hm = HotelManagerImpl.getInstance();
@@ -320,7 +338,8 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonChange;
+    private javax.swing.JButton btnGuestChange;
+    private javax.swing.JButton btnRoomChange;
     private javax.swing.JButton buttonSubmit;
     private org.jdesktop.swingx.JXDatePicker datePickerFrom;
     private org.jdesktop.swingx.JXDatePicker datePickerTo;
