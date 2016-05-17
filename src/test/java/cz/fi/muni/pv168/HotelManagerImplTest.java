@@ -28,9 +28,9 @@ public class HotelManagerImplTest {
     @Before
     public void setUp() throws  SQLException{
         db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();
-        hotelManager = new HotelManagerImpl(db);
-        roomManager = new RoomManagerImpl(db);
-        guestManager = new GuestManagerImpl(db);
+        hotelManager = HotelManagerImpl.getInstance(db);
+        roomManager = RoomManagerImpl.getInstance(db);
+        guestManager = GuestManagerImpl.getInstance(db);
     }
 
     @After

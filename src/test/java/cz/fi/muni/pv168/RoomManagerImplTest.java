@@ -20,12 +20,12 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
  */
 public class RoomManagerImplTest {
     private EmbeddedDatabase db;
-    private RoomManager manager = RoomManagerImpl.getInstance();
+    private RoomManager manager;
 
     @Before
     public void setUp() throws  SQLException{
         db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();
-        manager = new RoomManagerImpl(db);
+        manager = RoomManagerImpl.getInstance(db);
     }
 
     @After

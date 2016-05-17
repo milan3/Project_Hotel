@@ -24,7 +24,7 @@ public class GuestManagerImplTest {
     @Before
     public void setUp() {
         db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();
-        manager = new GuestManagerImpl(db);
+        manager = GuestManagerImpl.getInstance(db);
     }
     
     @After

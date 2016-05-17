@@ -29,6 +29,10 @@ public class HotelManagerImpl implements HotelManager {
     
     public static final String DEPARTURE_AFTER_ARRIVAL = "Departure must be after arrival";
    
+    public static HotelManager getInstance(DataSource ds) {
+        return new HotelManagerImpl(ds);
+    }
+    
     public static HotelManager getInstance() {
         return new AnnotationConfigApplicationContext(SpringConfig.class).getBean(HotelManager.class);
     }

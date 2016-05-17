@@ -22,7 +22,11 @@ public class GuestManagerImpl implements GuestManager {
     private static final String GUEST_NULL = "guest is null";
     
     final static Logger log = LoggerFactory.getLogger(GuestManagerImpl.class);
-       
+     
+    public static GuestManager getInstance(DataSource ds) {
+        return new GuestManagerImpl(ds);
+    }
+    
     public static GuestManager getInstance() {
         return new AnnotationConfigApplicationContext(SpringConfig.class).getBean(GuestManager.class);
     }

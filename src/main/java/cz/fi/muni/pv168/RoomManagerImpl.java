@@ -30,6 +30,10 @@ public class RoomManagerImpl implements RoomManager {
     
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);   
     
+    public static RoomManager getInstance(DataSource ds) {
+        return new RoomManagerImpl(ds);
+    }
+    
     public static RoomManager getInstance() {
         return new AnnotationConfigApplicationContext(SpringConfig.class).getBean(RoomManager.class);
     }
@@ -73,7 +77,7 @@ public class RoomManagerImpl implements RoomManager {
         }
         if (roomNumberExists(room)) {
             throw new ServiceFailureException(NUMBER_EXISTS);
-        }
+        }    
         if (room.getNumberOfBeds() < HotelManagerImpl.getInstance().findAccommodations(room).size()) {
             throw new ServiceFailureException(WRONG_NUMBER_OF_BEDS);
         }
