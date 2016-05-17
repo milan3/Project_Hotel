@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
  */
 public class AccommodationsDialog extends javax.swing.JDialog {
     private final AccommodationsTableModel model;
-    private final List<Room> rooms;
+    private List<Room> rooms;
     private final RoomManager rm = RoomManagerImpl.getInstance();
     private final HotelManager hm = HotelManagerImpl.getInstance();
     private static final ResourceBundle rs = StaticBundle.getInstance();
@@ -48,12 +48,18 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         });
          
         model = (AccommodationsTableModel)tableAccommodations.getModel();
+        new SwingWorker<Void, Void>(){
+            @Override
+            public Void doInBackground() throws Exception {
+                rooms = rm.getAllRooms();   
         
-        rooms = rm.getAllRooms();   
+                for (Room room : rooms) {
+                    comboBoxRooms.addItem(room);
+                }
+                return null;
+            }
+        }.execute();
         
-        for (Room room : rooms) {
-            comboBoxRooms.addItem(room);
-        }
         
         comboBoxRooms.addActionListener(new ActionListener() {
             @Override
@@ -271,10 +277,15 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     }
     
     private void fillTable(Room room) {
-        List<Accommodation> accs = hm.findAccommodations(room);
-        
-        model.clear();
-        model.addAll(hm.findAccommodations(room));
+        new SwingWorker<Void, Void>(){
+            @Override
+            public Void doInBackground() throws Exception {
+                model.clear();
+                model.addAll(hm.findAccommodations(room));
+                return null;
+            }
+        }.execute();     
+                
         boolean result = updateAvailableLabel(room);
 
         if (result) {
@@ -284,7 +295,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         }
     }
     
-    private boolean updateAvailableLabel(Room room) {
+    private boolean updateAvailableLabel(Room room) {       
         if (hm.isAvailable(room)) {
             lblAvailable.setText(rs.getString("available"));
             lblAvailable.setBackground(java.awt.Color.GREEN);

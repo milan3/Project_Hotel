@@ -60,6 +60,9 @@ public class GuestWindow extends javax.swing.JFrame {
                 return null;
             }
         }.execute();
+        buttonChangeAcc.setEnabled(false);
+        buttonEdit.setEnabled(false);
+        buttonRemove.setEnabled(false);
     }
 
     /**
