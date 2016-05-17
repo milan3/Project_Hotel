@@ -21,13 +21,16 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
  */
 public class HotelManagerImplTest {
     private EmbeddedDatabase db;
-    private HotelManager hotelManager = HotelManagerImpl.getInstance();;
-    private GuestManager guestManager = GuestManagerImpl.getInstance();
-    private RoomManager roomManager = RoomManagerImpl.getInstance();;
+    private HotelManager hotelManager;
+    private GuestManager guestManager;
+    private RoomManager roomManager;
 
     @Before
     public void setUp() throws  SQLException{
         db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();
+        hotelManager = new HotelManagerImpl(db);
+        roomManager = new RoomManagerImpl(db);
+        guestManager = new GuestManagerImpl(db);
     }
 
     @After

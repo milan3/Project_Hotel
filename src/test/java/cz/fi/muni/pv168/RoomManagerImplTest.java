@@ -24,7 +24,8 @@ public class RoomManagerImplTest {
 
     @Before
     public void setUp() throws  SQLException{
-        db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();;
+        db = new EmbeddedDatabaseBuilder().setType(DERBY).addScript("schema.sql").build();
+        manager = new RoomManagerImpl(db);
     }
 
     @After
