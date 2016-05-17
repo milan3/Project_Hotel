@@ -57,6 +57,9 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             buttonSubmit.setEnabled(true);
         } else {
             lblRoom.setText(room != null ? String.valueOf(room.getNumber()) : rs.getString("set_a_room"));
+            if (room != null) {
+                lblPrice.setText(room.getPrice().toString());
+            }
             lblGuest.setText(guest != null ? guest.getFullName() : rs.getString("set_a_guest"));
         }
         
@@ -285,6 +288,9 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         rld.setVisible(true);
         room = rld.getRoom();
         lblRoom.setText(room != null ? Integer.toString(room.getNumber()) : rs.getString("set_a_room"));
+        if (room != null) {
+            lblPrice.setText(room.getPrice().toString());
+        }
         checkEnabled();
     }//GEN-LAST:event_btnRoomChangeActionPerformed
 
