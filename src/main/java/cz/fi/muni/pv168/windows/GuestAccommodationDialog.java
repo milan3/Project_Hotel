@@ -27,12 +27,11 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     /**
      * Creates new form GuestAccommodationDialog
      */
-    public GuestAccommodationDialog(java.awt.Frame parent, boolean modal, Accommodation accommodation, Guest guest) {
+    public GuestAccommodationDialog(java.awt.Frame parent, boolean modal, Accommodation accommodation) {
         super(parent, modal);
         initComponents();
         
         this.accommodation = accommodation;     
-        this.guest = guest;
         
         if (parent instanceof RoomWindow) {
             btnGuestChange.setVisible(true);
@@ -317,7 +316,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GuestAccommodationDialog dialog = new GuestAccommodationDialog(new javax.swing.JFrame(), true, null, null);
+                GuestAccommodationDialog dialog = new GuestAccommodationDialog(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -334,6 +333,11 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
         lblRoom.setText(String.valueOf(room.getNumber()));
         lblPrice.setText(String.valueOf(room.getPrice()));
         lblGuest.setText(rs.getString("set_a_guest"));
+    }
+    
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+        lblGuest.setText(guest.getFullName());
     }
     
     public Accommodation getAccommodation() {
