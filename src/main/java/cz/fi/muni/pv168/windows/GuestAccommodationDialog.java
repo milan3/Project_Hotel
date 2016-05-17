@@ -240,28 +240,33 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
         HotelManager hm = HotelManagerImpl.getInstance();
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try {
+                    if (accommodation == null) {
+                        accommodation = hm.accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
+                    } else {
+                        accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
+                        accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
+                        accommodation.setRoom(room);
+                        hm.updateAccommodation(accommodation);
+                    }
+                } catch(ServiceFailureException e) {
+                    switch (e.getMessage()) {
+                        case HotelManagerImpl.DEPARTURE_AFTER_ARRIVAL:
+                            lblError.setText(rs.getString("DEPARTURE_AFTER_ARRIVAL"));
+                            datePickerFrom.setBackground(java.awt.Color.red);
+                            datePickerTo.setBackground(java.awt.Color.red);
+                            return null;
+                        default:
+                            return null;
+                    }
+                }
+                return null;
+            }
+        }.execute();
         
-        try {
-            if (accommodation == null) {
-                accommodation = hm.accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
-            } else {
-                accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
-                accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
-                accommodation.setRoom(room);
-                hm.updateAccommodation(accommodation);
-            }
-        } catch(ServiceFailureException e) {
-            lblError.setText(e.getMessage());
-
-            switch (e.getMessage()) {
-                case HotelManagerImpl.DEPARTURE_AFTER_ARRIVAL:
-                    datePickerFrom.setBackground(java.awt.Color.red);
-                    datePickerTo.setBackground(java.awt.Color.red);
-                    return;
-                default:
-                    return;
-            }
-        }
 
         dispose();
     }//GEN-LAST:event_buttonSubmitActionPerformed
