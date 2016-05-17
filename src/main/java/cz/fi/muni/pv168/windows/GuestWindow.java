@@ -242,9 +242,10 @@ public class GuestWindow extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void buttonChangeAccActionPerformed(java.awt.event.ActionEvent evt) {
-        JDialog w = new GuestAccommodationDialog(this, true, null, getSelectedGuest());
+        JDialog w = new GuestAccommodationDialog(this, true, hm.getAccommodationByGuest(getSelectedGuest()), getSelectedGuest());
         w.setVisible(true);
         this.setVisible(false);
+        updateSorter();
     }
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,10 +267,11 @@ public class GuestWindow extends javax.swing.JFrame {
                     model.addGuest(gm.getGuest(guest.getId()));
                     selectLastRow();
                 }
-
+                updateSorter();
                 return null;
             }
         }.execute();
+        
     }
 
     private void buttonEditActionPerformed(java.awt.event.ActionEvent evt) {
@@ -283,9 +285,11 @@ public class GuestWindow extends javax.swing.JFrame {
             @Override
             public Void doInBackground() throws Exception {
                 model.setGuestAt(selectedRow, gm.getGuest(guest.getId()));
+                updateSorter();
                 return null;
             }
         }.execute();
+        
     }
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {
@@ -302,11 +306,13 @@ public class GuestWindow extends javax.swing.JFrame {
                 if (accommodation != null) {
                     hm.cancelAccommodation(guest);
                 }
+                updateSorter();
                 return null;
             }
         }.execute();
 
         selectRow(selectedRow);
+        
     }
 
     /**

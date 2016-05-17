@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.ResourceBundle;
+import java.util.List;
 
 /**
  *
@@ -302,7 +303,9 @@ public class RoomWindow extends javax.swing.JFrame {
         new SwingWorker<Void, Void>(){
             @Override
             public Void doInBackground() throws Exception {
-                for (Guest guest : hm.findGuests(room)) {
+                List<Guest> guests = hm.findGuests(room);
+                              
+                for (Guest guest : guests) {
                     hm.cancelAccommodation(guest);
                 }
                 rm.deleteRoom(room);

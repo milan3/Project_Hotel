@@ -21,7 +21,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
 
     private Accommodation accommodation;
     private Guest guest = null;
-    private Room room;
+    private Room room = null;
     private static final ResourceBundle rs = StaticBundle.getInstance();
     
     /**
@@ -91,13 +91,13 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel3.setText("To");
+        jLabel3.setText(rs.getString("to"));
 
-        jLabel4.setText("Room:");
+        jLabel4.setText(rs.getString("room") + ": ");
 
-        jLabel1.setText("Price:");
+        jLabel1.setText(rs.getString("price")+": ");
 
-        buttonSubmit.setText("submit");
+        buttonSubmit.setText(rs.getString("submit"));
         buttonSubmit.setEnabled(false);
         buttonSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,21 +117,26 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             }
         });
 
-        btnGuestChange.setText("change");
+        btnGuestChange.setText(rs.getString("change"));
         btnGuestChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuestChangeActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("From");
+        jLabel2.setText(rs.getString("from"));
 
-        jLabel5.setText("Guest:");
+        jLabel5.setText(rs.getString("guest")+": ");
 
         lblError.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblError.setForeground(new java.awt.Color(255, 0, 51));
 
-        btnRoomChange.setText("change");
+        btnRoomChange.setText(rs.getString("change"));
+        btnRoomChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRoomChangeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,7 +168,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnGuestChange)
                             .addComponent(btnRoomChange))))
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(129, 129, 129)
@@ -181,7 +186,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
                                     .addComponent(jLabel1)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                             .addComponent(datePickerTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(140, Short.MAX_VALUE)))
+                    .addContainerGap(98, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,7 +248,7 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             } else {
                 accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
                 accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
-
+                accommodation.setRoom(room);
                 hm.updateAccommodation(accommodation);
             }
         } catch(ServiceFailureException e) {
@@ -269,6 +274,15 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     private void datePickerToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_datePickerToActionPerformed
         checkEnabled();
     }//GEN-LAST:event_datePickerToActionPerformed
+
+    private void btnRoomChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRoomChangeActionPerformed
+        // TODO add your handling code here:
+        final RoomListDialog rld = new RoomListDialog((Frame) SwingUtilities.getWindowAncestor(this), true);
+        rld.setVisible(true);
+        room = rld.getRoom();
+        lblRoom.setText(room != null ? Integer.toString(room.getNumber()) : rs.getString("set_a_room"));
+        checkEnabled();
+    }//GEN-LAST:event_btnRoomChangeActionPerformed
 
     /**
      * @param args the command line arguments
