@@ -50,6 +50,8 @@ public class GuestListDialog extends javax.swing.JDialog {
                     model.addElement(guest);
                 }
                 
+                listGuests.setSelectedIndex(listGuests.getModel().getSize() > 0 ? 0 : -1);
+                
                 return null;
             }
         }.execute();
