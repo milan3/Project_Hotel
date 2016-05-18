@@ -31,6 +31,8 @@ public class HotelManagerImplTest {
         hotelManager = HotelManagerImpl.getInstance(db);
         roomManager = RoomManagerImpl.getInstance(db);
         guestManager = GuestManagerImpl.getInstance(db);
+        ((HotelManagerImpl)hotelManager).setRoomManager(roomManager);
+        ((HotelManagerImpl)hotelManager).setGuestManager(guestManager);
     }
 
     @After
@@ -44,7 +46,12 @@ public class HotelManagerImplTest {
         guestManager.createGuest(guest);
         Room room = newRoom(103, 2, true, new BigDecimal(15));
         roomManager.createRoom(room);
+        
+        try {
         hotelManager.accommodateGuest(room, guest, LocalDate.of(2016, 7, 20), LocalDate.of(2016, 8, 20));
+        } catch(Exception e) {
+            System.out.println("error - " + e.getMessage());
+        }
 
         List<Guest> result = new ArrayList<>(hotelManager.findGuests(room));
         assertTrue("saved accommodation wasn't found", result.contains(guest));

@@ -28,7 +28,7 @@ public class HotelManagerImpl implements HotelManager {
     public static final Logger log = LoggerFactory.getLogger(HotelManagerImpl.class);
     
     public static final String DEPARTURE_AFTER_ARRIVAL = "Departure must be after arrival";
-   
+    
     public static HotelManager getInstance(DataSource ds) {
         return new HotelManagerImpl(ds);
     }

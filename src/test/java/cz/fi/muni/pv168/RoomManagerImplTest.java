@@ -143,7 +143,11 @@ public class RoomManagerImplTest {
         room.setBalcony(true);
         id = room.getId();
 
+        try {
         manager.updateRoom(room);
+        } catch(Exception e) {
+            System.out.println("error - " + e.getMessage());
+        }
         room = manager.getRoom(id);
 
         assertThat("Room should have balcony", room.hasBalcony(), is(equalTo(true)));
