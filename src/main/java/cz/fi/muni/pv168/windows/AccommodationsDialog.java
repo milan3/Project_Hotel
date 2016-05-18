@@ -173,10 +173,10 @@ public class AccommodationsDialog extends javax.swing.JDialog {
 
     private void buttonAccommodateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAccommodateActionPerformed
         Accommodation accommodation = null;
-        final GuestAccommodationDialog gaw = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
-        gaw.setRoom(getSelectedRoom());
-        gaw.setVisible(true);
-        accommodation = gaw.getAccommodation();
+        final GuestAccommodationDialog gad = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
+        gad.setRoom(getSelectedRoom());
+        gad.setVisible(true);
+        accommodation = gad.getAccommodation();
         final Accommodation acc = accommodation;      
         
         if (accommodation != null) {
