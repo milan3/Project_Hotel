@@ -29,7 +29,7 @@ public class RoomManagerImpl implements RoomManager {
     public static final String WRONG_NUMBER_OF_BEDS = "room cant have less beds than accommodated guests";
     
     final static Logger log = LoggerFactory.getLogger(RoomManagerImpl.class);   
-    
+
     public static RoomManager getInstance(DataSource ds) {
         return new RoomManagerImpl(ds);
     }
