@@ -53,6 +53,8 @@ public class RoomListDialog extends javax.swing.JDialog {
                     model.addElement(room);
                 }
                 
+                listRooms.setSelectedIndex(model.size() > 0 ? 0 : -1);
+                
                 return null;
             }
         }.execute();
