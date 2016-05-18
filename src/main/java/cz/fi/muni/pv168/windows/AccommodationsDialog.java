@@ -30,24 +30,12 @@ public class AccommodationsDialog extends javax.swing.JDialog {
     /**
      * Creates new form AccommodationsDialog
      */
-    public AccommodationsDialog(java.awt.Frame parent, boolean modal) {
+    public AccommodationsDialog(java.awt.Frame parent, boolean modal, Room room) {
         super(parent, modal);
         initComponents();
-        
-        tableAccommodations.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (tableAccommodations.getRowCount() > 0) {
-                    buttonChange.setEnabled(true);
-                    buttonRemove.setEnabled(true);
-                } else {
-                    buttonChange.setEnabled(false);
-                    buttonRemove.setEnabled(false);
-                }
-            }
-        });
          
         model = (AccommodationsTableModel)tableAccommodations.getModel();
+        
         new SwingWorker<Void, Void>(){
             @Override
             public Void doInBackground() throws Exception {
@@ -56,28 +44,42 @@ public class AccommodationsDialog extends javax.swing.JDialog {
                 for (Room room : rooms) {
                     comboBoxRooms.addItem(room);
                 }
+                
+                tableAccommodations.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (tableAccommodations.getRowCount() > 0) {
+                            buttonChange.setEnabled(true);
+                            buttonRemove.setEnabled(true);
+                        } else {
+                            buttonChange.setEnabled(false);
+                            buttonRemove.setEnabled(false);
+                        }
+                    }
+                });
+                
+                comboBoxRooms.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Room room = getSelectedRoom();
+
+                        new SwingWorker<Void, Void>() {
+                            @Override
+                            protected Void doInBackground() throws Exception {
+
+                                fillTable(room);
+                                selectFirstRow();
+                                return null;
+                            }
+                        }.execute();
+                    }
+                });
+                
+                setRoom(room);
                 return null;
             }
         }.execute();
-        
-        
-        comboBoxRooms.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Room room = getSelectedRoom();
-                
-                new SwingWorker<Void, Void>() {
-                    @Override
-                    protected Void doInBackground() throws Exception {
-
-                        fillTable(room);
-                        selectFirstRow();
-                        return null;
-                    }
-                }.execute();
-            }
-        });
-        
+          
         lblAvailable.setOpaque(true);
     }
 
@@ -175,7 +177,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         gaw.setRoom(getSelectedRoom());
         gaw.setVisible(true);
         accommodation = gaw.getAccommodation();
-        final Accommodation acc = accommodation;
+        final Accommodation acc = accommodation;      
         
         if (accommodation != null) {
             model.addAccommodation(accommodation);
@@ -184,6 +186,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
             new SwingWorker<Void, Void>() {
                 @Override
                 public Void doInBackground() {
+                    System.out.println("updating label");
                     if (updateAvailableLabel(acc.getRoom())) {
                         buttonAccommodate.setEnabled(true);
                     } else {
@@ -260,7 +263,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AccommodationsDialog dialog = new AccommodationsDialog(new javax.swing.JFrame(), true);
+                AccommodationsDialog dialog = new AccommodationsDialog(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -272,7 +275,7 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         });
     }
 
-    public void setRoom(Room room) {
+    private void setRoom(Room room) {
         comboBoxRooms.setSelectedItem(room);
     }
     

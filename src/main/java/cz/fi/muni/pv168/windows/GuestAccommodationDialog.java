@@ -290,7 +290,6 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_datePickerToActionPerformed
 
     private void btnRoomChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRoomChangeActionPerformed
-        // TODO add your handling code here:
         final RoomListDialog rld = new RoomListDialog((Frame) SwingUtilities.getWindowAncestor(this), true);
         rld.setVisible(true);
         room = rld.getRoom();

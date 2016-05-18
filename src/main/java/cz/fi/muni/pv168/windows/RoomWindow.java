@@ -250,8 +250,7 @@ public class RoomWindow extends javax.swing.JFrame {
     private void buttonManageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonManageActionPerformed
         Room room = getSelectedRoom();
                 
-        final AccommodationsDialog aw = new AccommodationsDialog(this, true);
-        aw.setRoom(room);
+        final AccommodationsDialog aw = new AccommodationsDialog(this, true, room);
         aw.setVisible(true);
         
         for (int i = 0; i < model.getRowCount(); i++) {
