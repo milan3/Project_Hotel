@@ -249,35 +249,30 @@ public class GuestAccommodationDialog extends javax.swing.JDialog {
             datePickerTo.setBackground(java.awt.Color.red);
             return;
         }
-        new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                try {
-                    if (accommodation == null) {
-                        accommodation = hm.accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
-                    } else {
-                        
-                        accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
-                        accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
-                        accommodation.setRoom(room);
-                        hm.updateAccommodation(accommodation);
-                    }
-                } catch(ServiceFailureException e) {
-                    switch (e.getMessage()) {
-                        case HotelManagerImpl.DEPARTURE_AFTER_ARRIVAL:
-                            lblError.setText(rs.getString("DEPARTURE_AFTER_ARRIVAL"));
-                            datePickerFrom.setBackground(java.awt.Color.red);
-                            datePickerTo.setBackground(java.awt.Color.red);
-                            return null;
-                        default:
-                            return null;
-                    }
-                }
-                return null;
-            }
-        }.execute();
         
-
+        //tu nemoze byt SwingWorker pretoze by sa nemalo dat vratit z okna, ked este korektne neskoncilo pridanie/update a stale sa caka na zavretie okna
+        try {
+            if (accommodation == null) {
+                accommodation = hm.accommodateGuest(room, guest, getLocalDate(datePickerFrom.getDate()), getLocalDate(datePickerTo.getDate()));
+            } else {
+                        
+                accommodation.setArrival(getLocalDate(datePickerFrom.getDate()));
+                accommodation.setDeparture(getLocalDate(datePickerTo.getDate()));
+                accommodation.setRoom(room);
+                hm.updateAccommodation(accommodation);
+             }
+         } catch(ServiceFailureException e) {
+            switch (e.getMessage()) {
+                case HotelManagerImpl.DEPARTURE_AFTER_ARRIVAL:
+                    lblError.setText(rs.getString("DEPARTURE_AFTER_ARRIVAL"));
+                    datePickerFrom.setBackground(java.awt.Color.red);
+                    datePickerTo.setBackground(java.awt.Color.red);
+                    return;
+                 default:
+                    return;
+                }
+            }
+        
         dispose();
     }//GEN-LAST:event_buttonSubmitActionPerformed
 

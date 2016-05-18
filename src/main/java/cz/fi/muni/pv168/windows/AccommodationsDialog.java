@@ -176,8 +176,9 @@ public class AccommodationsDialog extends javax.swing.JDialog {
         final GuestAccommodationDialog gad = new GuestAccommodationDialog((Frame) SwingUtilities.getWindowAncestor(this), true, accommodation);
         gad.setRoom(getSelectedRoom());
         gad.setVisible(true);
+             
         accommodation = gad.getAccommodation();
-        final Accommodation acc = accommodation;      
+        final Accommodation acc = accommodation;
         
         if (accommodation != null) {
             model.addAccommodation(accommodation);
